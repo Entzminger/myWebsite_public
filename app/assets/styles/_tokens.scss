@@ -1,0 +1,86 @@
+// Central design tokens - values only. Everything that *does* something with
+// them, the theme and media query mixins, lives next door in `_mixins.scss`.
+//
+// Radii, shadows and type stacks are Sass variables and nothing else: they are
+// the same on screen and on paper, so there is nothing for the cascade to
+// decide at runtime and a `var()` would only cost a lookup. Use them as
+// `tokens.$radius-pill` - inside a custom property declaration Sass parses the
+// value as plain text, so it needs `#{tokens.$shadow-sm}` there.
+//
+// The colors are the opposite case: they do change, once, when the page goes
+// on paper. Only they are CSS custom properties, and the palettes that set
+// them are the `theme-dark`/`theme-print` mixins in `_mixins.scss`.
+
+// Breakpoints (mobile-first)
+$bp-sm: 30rem; // 480px
+$bp-md: 48rem; // 768px
+$bp-lg: 64rem; // 1024px
+$bp-xl: 80rem; // 1280px
+
+// ---------------------------------------------------------------------------
+// Color scales
+// ---------------------------------------------------------------------------
+// Raw palette. Only use these to derive the semantic tokens below or for
+// one-off gradients/overlays that need an alpha channel.
+
+// Primary – warm orange, carries the brand and the logo gradient.
+$color-primary-50: #fff7ed;
+$color-primary-100: #ffedd5;
+$color-primary-200: #fed7aa;
+$color-primary-300: #fdba74;
+$color-primary-400: #fb923c;
+$color-primary-500: #f97316;
+$color-primary-600: #ea580c;
+$color-primary-700: #c2410c;
+$color-primary-800: #9a3412;
+$color-primary-900: #7c2d12;
+$color-primary-950: #431407;
+
+// Ink – neutral cool grey for text, surfaces and borders.
+$color-ink-50: #f8fafc;
+$color-ink-100: #f1f5f9;
+$color-ink-200: #e2e8f0;
+$color-ink-300: #cbd5e1;
+$color-ink-400: #94a3b8;
+$color-ink-500: #64748b;
+$color-ink-600: #475569;
+$color-ink-700: #334155;
+$color-ink-800: #1e293b;
+$color-ink-900: #0f172a;
+$color-ink-950: #020617;
+
+// Accent – cyan counterpart to the primary, for secondary highlights.
+$color-accent-50: #ecfeff;
+$color-accent-100: #cffafe;
+$color-accent-200: #a5f3fc;
+$color-accent-300: #67e8f9;
+$color-accent-400: #22d3ee;
+$color-accent-500: #06b6d4;
+$color-accent-600: #0891b2;
+$color-accent-700: #0e7490;
+$color-accent-800: #155e75;
+$color-accent-900: #164e63;
+
+// Feedback - green only, because `--my-color-success` is all that comes out of
+// it. Yellow and red return as soon as there is a state that shows them.
+$color-success-400: #4ade80;
+$color-success-500: #22c55e;
+$color-success-600: #16a34a;
+
+// ---------------------------------------------------------------------------
+// Semantic tokens
+// ---------------------------------------------------------------------------
+// The UI runs on a dark ground: sections sit on the deepest ink steps, cards
+// are lifted by one or two steps. Text and brand colors therefore use the
+// light steps of their scale so they stay above 4.5:1 on those surfaces.
+
+$radius-sm: 0.5rem;
+$radius-md: 0.875rem;
+$radius-lg: 1.25rem;
+$radius-pill: 999px;
+
+$shadow-sm: 0 1px 2px rgba($color-ink-950, 0.5);
+$shadow-md: 0 16px 36px -18px rgba($color-ink-950, 0.85);
+
+$font-body: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+$font-mono: 'Cascadia Code', Consolas, 'SFMono-Regular', ui-monospace, monospace;

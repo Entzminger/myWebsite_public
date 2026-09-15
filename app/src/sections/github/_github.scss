@@ -1,0 +1,229 @@
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+// GitHub's own purple (Primer). It belongs to the linked service, not to the
+// site's palette, and stays local to this block instead of becoming a token.
+// Contrast on the section ground (ink-950): `strong` 6.0:1, `bright` 8.8:1.
+$github-purple: #8250df; // brand tone – gradients, glows and borders
+$github-purple-deep: #6e40c9; // dark end of the button gradient
+$github-purple-strong: #a371f7; // labels and icons on the section ground
+$github-purple-bright: #c297ff; // 5.8:1 on the tinted chips inside the card
+
+// Ground, spacing and type come from the shared `.my-section` class in
+// `parts/section/_section.scss`; only what sets this section apart lives here.
+.my-github {
+  // Purple counter-glow at the foot of the block, so the section keeps its
+  // own colour against the green one above it.
+  &::before {
+    content: '';
+    position: absolute;
+    inset-inline: -20%;
+    inset-block-end: 0;
+    block-size: 60vh;
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 50%,
+      rgba($github-purple, 0.22),
+      rgba($github-purple, 0) 70%
+    );
+    pointer-events: none;
+  }
+
+  /* Background logo */
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  &__backdrop-logo {
+    // Sized against the height of the block, so the whole mark stays inside it
+    // instead of being cropped to an unrecognisable slice.
+    block-size: min(92%, 34rem);
+    inline-size: auto;
+    color: var(--my-color-surface-invert);
+    // Low enough to stay clearly behind the copy, high enough that the mark is
+    // still readable as a branch graph.
+    opacity: 0.08;
+    filter: blur(0.5rem);
+  }
+
+  &__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+    max-inline-size: 72rem;
+    margin-inline: auto;
+  }
+
+  /* Text column */
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    color: $github-purple-strong;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    &::before {
+      content: '//';
+      font-family: tokens.$font-mono;
+      font-size: 1.15em;
+      font-weight: 700;
+      // The uppercase tracking of the label would tear the two slashes apart.
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__lead {
+    margin: 0 0 1rem;
+    max-inline-size: 42rem;
+    font-size: clamp(1.0625rem, 2vw, 1.25rem);
+    color: var(--my-color-ink);
+  }
+
+  &__text {
+    margin: 0 0 2rem;
+    max-inline-size: 42rem;
+    color: var(--my-color-ink-muted);
+  }
+
+  // The list itself is `parts/highlights`; only the brand colour of
+  // its check marks belongs to this section.
+  &__highlights {
+    --my-highlights-icon: #{$github-purple-strong};
+  }
+
+  /* Repository card - ground and border come from `Card`, only its content
+     stands here. */
+
+  &__card-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__card-icon {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__repo {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  &__repo-owner {
+    color: var(--my-color-ink-muted);
+    font-weight: 400;
+  }
+
+  &__repo-name {
+    color: var(--my-color-surface-invert);
+  }
+
+  &__branch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4375rem;
+    margin: 0;
+    padding: 0.1875rem 0.625rem;
+    border: 1px solid var(--my-color-border-strong);
+    border-radius: tokens.$radius-pill;
+    color: var(--my-color-ink-muted);
+    font-family: tokens.$font-mono;
+    font-size: 0.75rem;
+  }
+
+  &__branch-dot {
+    inline-size: 0.5rem;
+    block-size: 0.5rem;
+    border-radius: tokens.$radius-pill;
+    background-color: var(--my-color-success);
+  }
+
+  &__card-text {
+    margin: 0;
+    color: var(--my-color-ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  // The chips themselves come from the shared `Chips` block; only the purple is
+  // this section's own, so it is handed over as custom properties.
+  &__topics {
+    --my-chips-border: #{rgba($github-purple, 0.6)};
+    --my-chips-background: #{rgba($github-purple, 0.16)};
+    // The tinted ground inside the card lifts the chips, so their label needs
+    // the brighter step to stay above 4.5:1.
+    --my-chips-ink: #{$github-purple-bright};
+  }
+
+  /* The link out */
+
+  // Shape and motion come from `Cta`; only GitHub's own tones stand here. The
+  // white label clears 4.5:1 on both ends of the gradient.
+  &__cta {
+    --my-cta-from: #{$github-purple-deep};
+    --my-cta-to: #{$github-purple};
+    --my-cta-glow: #{rgba($github-purple, 0.8)};
+    --my-cta-glow-hover: #{rgba($github-purple, 0.9)};
+  }
+
+  &__cta-icon {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+  }
+
+  &__cta-arrow {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  &__sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @include mixins.bp-lg {
+    &__inner {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: center;
+    }
+  }
+
+  /* Print output */
+
+  // Not the resume, so not on the sheet - see `parts/section/_section.scss`.
+  @media print {
+    display: none;
+  }
+}

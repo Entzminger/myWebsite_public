@@ -1,0 +1,140 @@
+@use 'tokens' as tokens;
+@use 'mixins' as mixins;
+
+// The color palette plus the dark ground the whole page sits on. This is the
+// one deliberate global style layer; everything else stays inside its feature
+// component.
+:root {
+  @include mixins.theme-dark;
+
+  color-scheme: dark;
+}
+
+html {
+  // The ground of the page, and the only place it is set: this background
+  // paints the whole canvas, beyond the box of `html` itself and past the end
+  // of the content. `body` repeating it would change nothing - the same value
+  // painted a second time, over a smaller area.
+  background-color: var(--my-color-surface-alt);
+
+  // Anchor targets stop below the sticky navigation bar instead of behind it.
+  scroll-padding-block-start: 4.5rem;
+}
+
+body {
+  margin: 0;
+  color: var(--my-color-ink);
+  font-family: tokens.$font-body;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Selected text carries the orange of the page. The type on it is the same
+// dark ink as on the main button - on that orange it clears 4.5:1 by a wide
+// margin, which light type would not.
+::selection {
+  background-color: var(--my-color-primary);
+  color: tokens.$color-ink-950;
+}
+
+// Anchor links between the sections glide instead of jumping, and the step
+// over to the privacy notice fades instead of cutting - unless the visitor
+// asked for less motion.
+//
+// The crossfade used to hang on `:target`, back when the notice was a second
+// view of this document. It is a document of its own now, so the browser
+// animates the navigation between the two instead: `@view-transition` opts
+// both of them in, and it still takes no JavaScript. The at-rule has to stand
+// in *both* documents, which it does - this file is the one global style layer
+// and loads on every route.
+//
+// Where it is not supported the navigation is simply instant, exactly as it
+// was before this block existed. Nothing else falls back to.
+@include mixins.motion-ok {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @view-transition {
+    navigation: auto;
+  }
+
+  // The notice lies to the right of the page, and the movement says so: going
+  // there pushes the page out to the left, coming back reverses it.
+  //
+  // Which of the two rules applies is decided by the document that *arrives* -
+  // it is the new document that styles these pseudo-elements, not the one
+  // being left. So each page only has to recognise itself, and no script has
+  // to work out a direction. What the browser cannot tell without JavaScript
+  // is the history direction (forward vs. back), but that is not what is
+  // wanted here: the notice sits to the right either way, whether it is
+  // reached by a click or left with the back button.
+  //
+  // The pseudo-elements hang off the root element, hence `html` rather than
+  // `body` - a `body:has(…)` prefix would never match them.
+  html:has(#privacy) {
+    &::view-transition-old(root) {
+      animation: my-view-out-left 0.4s ease both;
+    }
+
+    &::view-transition-new(root) {
+      animation: my-view-in-right 0.4s ease both;
+    }
+  }
+
+  // Anything that is not the notice - the start page, and the error pages
+  // too - is reached by going back to the left.
+  html:not(:has(#privacy)) {
+    &::view-transition-old(root) {
+      animation: my-view-out-right 0.4s ease both;
+    }
+
+    &::view-transition-new(root) {
+      animation: my-view-in-left 0.4s ease both;
+    }
+  }
+}
+
+// The four halves of the movement. The fade rides along so the two documents
+// do not visibly stack while they pass each other.
+@keyframes my-view-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes my-view-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes my-view-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+@keyframes my-view-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+// On paper the palette turns light; the dark ground is a screen design, not
+// something to spend ink on. The sheet turns white through the palette like
+// everything else - there is no separate rule for the ground, which is why
+// `html` above needs none for print either.
+//
+// What goes on the sheet is not decided here either: every block that stays
+// off it says so in its own partial, the way `parts/navi` and `parts/footer`
+// do - the note in `_section.scss` has the whole picture.
+@media print {
+  :root {
+    @include mixins.theme-print;
+  }
+}

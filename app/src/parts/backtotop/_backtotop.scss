@@ -1,0 +1,73 @@
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+// The button floats over the sections instead of living in one of them -
+// `.my-section` never wraps it. Its tokens come from `:root` all the same:
+// they are defined there in `base.scss` and inherit down the whole document.
+.my-backtotop {
+  position: fixed;
+  inset-block-end: clamp(1rem, 3vw, 2rem);
+  inset-inline-end: clamp(1rem, 3vw, 2rem);
+  // Over the sections, but under the sticky bar and its open burger menu.
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  // Square and above the 44px target size for pointing devices (WCAG 2.5.8).
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: tokens.$radius-pill;
+  // Dark ink on the brand orange - the same recipe as the other main actions.
+  background: linear-gradient(
+    135deg,
+    var(--my-color-primary),
+    tokens.$color-primary-400
+  );
+  box-shadow: 0 12px 24px -12px rgba(tokens.$color-primary-500, 0.8);
+  color: tokens.$color-ink-950;
+  text-decoration: none;
+  // Away until the first section is out of view. `visibility` does the real
+  // work: it also takes the button out of the tab order and the accessibility
+  // tree, which plain `opacity` would leave behind.
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: visibility 0.25s ease, opacity 0.25s ease, transform 0.25s ease,
+    filter 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 16px 28px -12px rgba(tokens.$color-primary-500, 0.9);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--my-color-ink);
+    outline-offset: 3px;
+  }
+
+  &--visible {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &__icon {
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  // The fade is decoration, the button still has to appear and disappear.
+  @include mixins.motion-reduce {
+    transform: none;
+    transition: none;
+
+    &--visible {
+      transform: none;
+    }
+  }
+
+  // The sheet is paper - a control that scrolls has no place on it.
+  @media print {
+    display: none;
+  }
+}

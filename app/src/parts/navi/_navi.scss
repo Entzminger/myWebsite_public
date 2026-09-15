@@ -1,0 +1,285 @@
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+.my-navi {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 100;
+  color: var(--my-color-ink);
+  font-family: tokens.$font-body;
+  // Translucent so the section glows shimmer through; the blur keeps the
+  // labels readable while content scrolls underneath.
+  background-color: rgba(tokens.$color-ink-950, 0.72);
+  backdrop-filter: blur(12px);
+  border-block-end: 1px solid rgba(tokens.$color-ink-700, 0.6);
+
+  // Skip link – off screen until it takes focus.
+  &__skip {
+    position: absolute;
+    inset-block-start: 0.5rem;
+    inset-inline-start: 0.5rem;
+    z-index: 1;
+    padding: 0.5rem 0.875rem;
+    transform: translateY(-200%);
+    border-radius: tokens.$radius-sm;
+    background-color: var(--my-color-surface);
+    color: var(--my-color-ink);
+    text-decoration: none;
+
+    &:focus-visible {
+      transform: translateY(0);
+      outline: 2px solid var(--my-color-primary-strong);
+      outline-offset: 2px;
+    }
+  }
+
+  &__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 1rem;
+    min-block-size: 3.5rem;
+    padding: 0.5rem 1.25rem;
+  }
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    justify-self: start;
+    color: inherit;
+    text-decoration: none;
+
+    // The logo brings its own vertical rhythm for standalone use; inside the
+    // bar the grid handles the spacing. Its 2.5rem stay below the 3.5rem content
+    // box of `.my-navi__inner`, so the mark does not grow the bar.
+    :deep(.my-logo) {
+      margin: 0;
+      flex: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--my-color-primary-strong);
+      outline-offset: 4px;
+      border-radius: tokens.$radius-sm;
+    }
+  }
+
+  &__wordmark {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__dot {
+    color: var(--my-color-primary);
+    font-size: 1.65em;
+    line-height: 0;
+  }
+
+  // -------------------------------------------------------------------------
+  // Burger – three bars that fold into an X while the panel opens.
+  // -------------------------------------------------------------------------
+
+  $burger-bar-height: 2px;
+  $burger-bars-height: 1rem;
+  // Distance each outer bar travels to meet in the middle.
+  $burger-travel: calc(#{$burger-bars-height} / 2 - #{$burger-bar-height} / 2);
+
+  &__burger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    justify-self: end;
+    padding: 0.625rem;
+    margin-inline-end: -0.625rem; // optical alignment with the bar padding
+    border: 0;
+    border-radius: tokens.$radius-sm;
+    background: none;
+    color: var(--my-color-surface-invert);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--my-color-primary-strong);
+      outline-offset: 2px;
+    }
+  }
+
+  &__bars {
+    position: relative;
+    display: block;
+    inline-size: 1.5rem;
+    block-size: $burger-bars-height;
+  }
+
+  &__bar {
+    position: absolute;
+    inset-inline: 0;
+    block-size: $burger-bar-height;
+    border-radius: tokens.$radius-pill;
+    background-color: currentcolor;
+    transition:
+      transform 0.3s ease,
+      opacity 0.2s ease;
+
+    &:nth-child(1) {
+      inset-block-start: 0;
+    }
+
+    &:nth-child(2) {
+      inset-block-start: $burger-travel;
+    }
+
+    &:nth-child(3) {
+      inset-block-end: 0;
+    }
+  }
+
+  &__burger--open {
+    // Inside this block `&` is the burger, not the navigation, so `&__bar`
+    // would compile to `.my-navi__burger--open__bar`. The bars are therefore
+    // named in full - the one place in this file where that is necessary.
+    .my-navi__bar:nth-child(1) {
+      transform: translateY($burger-travel) rotate(45deg);
+    }
+
+    // The middle bar is the one the other two replace, so it fades out first.
+    .my-navi__bar:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .my-navi__bar:nth-child(3) {
+      transform: translateY(calc(-1 * #{$burger-travel})) rotate(-45deg);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Menu – a panel below the bar on small screens, a plain row from md up.
+  // -------------------------------------------------------------------------
+
+  &__nav {
+    position: absolute;
+    inset-block-start: 100%;
+    inset-inline: 0;
+    padding: 0.5rem 1.25rem 1.25rem;
+    // Opaque: a nested backdrop-filter would sample the bar's own backdrop
+    // root instead of the page, so the panel cannot rely on blur to stay
+    // readable over the hero.
+    background-color: var(--my-color-surface-alt);
+    border-block-end: 1px solid rgba(tokens.$color-ink-700, 0.6);
+    box-shadow: tokens.$shadow-md;
+    // Closed: folded away and out of the tab order. `visibility` also carries
+    // the transition, so it only flips back to hidden once the fade is done.
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.5rem);
+    transition:
+      opacity 0.25s ease,
+      transform 0.25s ease,
+      visibility 0s linear 0.25s;
+  }
+
+  &__nav--open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__link {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.375rem;
+    color: var(--my-color-surface-invert);
+    font-size: 0.9375rem;
+    text-decoration: none;
+
+    // The underline is the whole hover/active state: it grows out of the
+    // center instead of blinking on.
+    &::after {
+      content: '';
+      position: absolute;
+      inset-block-end: 0;
+      inset-inline: 0;
+      block-size: 2px;
+      border-radius: tokens.$radius-pill;
+      background-color: var(--my-color-primary);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.25s ease;
+    }
+
+    &:hover::after,
+    &:focus-visible::after,
+    &--active::after {
+      transform: scaleX(1);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--my-color-primary-strong);
+      outline-offset: 4px;
+      border-radius: tokens.$radius-sm;
+    }
+  }
+
+  @include mixins.motion-reduce {
+    &__bar,
+    &__nav,
+    &__link::after {
+      transition: none;
+    }
+  }
+
+  @include mixins.bp-md {
+    &__inner {
+      // Three tracks so the links sit in the optical center of the page,
+      // independent of how wide the brand is.
+      grid-template-columns: 1fr auto 1fr;
+    }
+
+    &__burger {
+      display: none;
+    }
+
+    // From here the list is always open and part of the bar itself, so the
+    // panel styling is reset wholesale.
+    &__nav {
+      position: static;
+      grid-column: 2;
+      padding: 0;
+      background: none;
+      border-block-end: 0;
+      box-shadow: none;
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: none;
+    }
+
+    &__list {
+      flex-direction: row;
+      gap: clamp(1rem, 4vw, 2.25rem);
+    }
+  }
+
+  /* Print output */
+
+  // A control, not content - it never goes on paper, whichever route is
+  // printed.
+  @media print {
+    display: none;
+  }
+}

@@ -1,0 +1,119 @@
+// Everything that acts on the design tokens: the two colour palettes and the
+// media queries the project writes over and over. The values themselves stay
+// in `_tokens.scss` - this file only reaches for them.
+
+@use 'tokens' as tokens;
+
+// One mixin per breakpoint, each named after the variable it reads.
+// Mobile-first throughout, so each is a `min-width`: what stands inside applies
+// from that width upwards. They exist so that no partial has to spell out the
+// query - a breakpoint is then a single place, not a variable in one file and
+// the word `min-width` in fifteen others.
+//
+//   @include mixins.bp-lg {
+//     &__inner { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); }
+//   }
+//
+// `@content` is evaluated where the mixin is called, so `&` still means the
+// block around it - these nest inside a rule exactly like the raw query did.
+@mixin bp-sm {
+  @media (min-width: tokens.$bp-sm) {
+    @content;
+  }
+}
+
+@mixin bp-md {
+  @media (min-width: tokens.$bp-md) {
+    @content;
+  }
+}
+
+@mixin bp-lg {
+  @media (min-width: tokens.$bp-lg) {
+    @content;
+  }
+}
+
+@mixin bp-xl {
+  @media (min-width: tokens.$bp-xl) {
+    @content;
+  }
+}
+
+// The two sides of the motion preference. `motion-reduce` is the counterpart
+// every animation on the page owes its visitor; `motion-ok` is the other
+// direction, for movement that is only ever added when nobody objected -
+// smooth scrolling and the view transition in `base.scss`.
+//
+// They are not each other's negation. A visitor who has expressed no
+// preference matches `motion-ok` and not `motion-reduce`, but an old browser
+// that understands neither query matches neither - which is why the base state
+// outside both has to stand on its own.
+@mixin motion-reduce {
+  @media (prefers-reduced-motion: reduce) {
+    @content;
+  }
+}
+
+@mixin motion-ok {
+  @media (prefers-reduced-motion: no-preference) {
+    @content;
+  }
+}
+
+// Dark theme – the default for the site.
+@mixin theme-dark {
+  --my-color-primary: #{tokens.$color-primary-500};
+  --my-color-primary-soft: #{tokens.$color-primary-700};
+  --my-color-primary-tint: #{tokens.$color-primary-950};
+  --my-color-primary-strong: #{tokens.$color-primary-400}; // 6.5:1 on surface
+
+  --my-color-accent-soft: #{tokens.$color-accent-700};
+  --my-color-accent-tint: #{tokens.$color-accent-900};
+  --my-color-accent-strong: #{tokens.$color-accent-400};
+
+  --my-color-ink: #{tokens.$color-ink-100};
+  --my-color-ink-muted: #{tokens.$color-ink-300};
+  --my-color-ink-subtle: #{tokens.$color-ink-400}; // 5.7:1 on surface
+
+  --my-color-surface: #{tokens.$color-ink-800}; // cards, raised elements
+  --my-color-surface-alt: #{tokens.$color-ink-950}; // page and section ground
+  --my-color-surface-invert: #{tokens.$color-ink-50};
+  --my-color-border: #{tokens.$color-ink-700};
+  --my-color-border-strong: #{tokens.$color-ink-600};
+
+  // The only state tone the page needs: the dot next to the branch name in
+  // the GitHub card. `warning` and `error` arrive once a state asks for
+  // them.
+  --my-color-success: #{tokens.$color-success-400};
+}
+
+// The palette for paper: light ground, dark ink. It is not a second theme the
+// site can be switched to - nothing but the print block includes it, and the
+// name says so, so that a light mode is a deliberate decision rather than
+// something this mixin quietly suggests.
+@mixin theme-print {
+  --my-color-primary: #{tokens.$color-primary-500};
+  --my-color-primary-soft: #{tokens.$color-primary-200};
+  --my-color-primary-tint: #{tokens.$color-primary-50};
+  --my-color-primary-strong: #{tokens.$color-primary-700}; // 5.2:1 on white
+
+  --my-color-accent-soft: #{tokens.$color-accent-200};
+  --my-color-accent-tint: #{tokens.$color-accent-50};
+  --my-color-accent-strong: #{tokens.$color-accent-700};
+
+  --my-color-ink: #{tokens.$color-ink-900};
+  --my-color-ink-muted: #{tokens.$color-ink-600};
+  --my-color-ink-subtle: #{tokens.$color-ink-500};
+
+  // Both grounds are the paper itself - an unprinted sheet is the cheapest
+  // white there is, and a tint across the whole page would only cost ink. What
+  // separates a card from the ground here is its border, not its fill.
+  --my-color-surface: #ffffff;
+  --my-color-surface-alt: #ffffff;
+  --my-color-surface-invert: #{tokens.$color-ink-900};
+  --my-color-border: #{tokens.$color-ink-200};
+  --my-color-border-strong: #{tokens.$color-ink-300};
+
+  --my-color-success: #{tokens.$color-success-600};
+}

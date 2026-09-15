@@ -1,0 +1,15 @@
+# Line endings. Everything Git recognises as text lives in the repository and
+# in the working tree with LF - no matter how `core.autocrlf` is set on the
+# machine at hand.
+* text=auto eol=lf
+
+# Batch files are what the Windows interpreter needs with CRLF.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary: never convert, never diff as text.
+*.png binary
+*.ico binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

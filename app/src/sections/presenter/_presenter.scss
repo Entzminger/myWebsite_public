@@ -1,0 +1,314 @@
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+// Ground, spacing and type come from the shared `.my-section` class in
+// `parts/section/_section.scss`; only what sets this section apart lives here.
+.my-presenter {
+  // The hero stacks its parts and lets them keep their distance; its height
+  // comes from the content, not from the viewport.
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(2rem, 5vw, 3rem);
+
+  // Warm brand glow in the upper left, cool accent counter-glow to the lower
+  // right. Both fade out well inside the box, otherwise clipping leaves a
+  // hard edge.
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    pointer-events: none;
+  }
+
+  &::before {
+    inset-block-start: 0;
+    inset-inline-start: -15%;
+    inline-size: 85%;
+    block-size: 80%;
+    background: radial-gradient(
+      ellipse 55% 55% at 50% 50%,
+      rgba(tokens.$color-primary-500, 0.32),
+      rgba(tokens.$color-primary-500, 0) 70%
+    );
+  }
+
+  &::after {
+    inset-block-end: 0;
+    inset-inline-end: -15%;
+    inline-size: 75%;
+    block-size: 70%;
+    background: radial-gradient(
+      ellipse 55% 55% at 50% 50%,
+      rgba(tokens.$color-accent-500, 0.24),
+      rgba(tokens.$color-accent-500, 0) 70%
+    );
+  }
+
+  // Faint dot raster that gives the empty ground some texture. The mask fades it
+  // out towards the edges so it never fights with the content.
+  &__grid {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      rgba(tokens.$color-ink-400, 0.28) 1px,
+      transparent 1px
+    );
+    background-size: 2.25rem 2.25rem;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent 75%);
+    pointer-events: none;
+  }
+
+  &__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
+    align-items: center;
+    inline-size: 100%;
+    max-inline-size: 72rem;
+    margin-inline: auto;
+  }
+
+  @include mixins.bp-lg {
+    &__inner {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    }
+  }
+
+  /* Text column */
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    color: var(--my-color-primary-strong);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    &::before {
+      content: '//';
+      font-family: tokens.$font-mono;
+      font-size: 1.15em;
+      font-weight: 700;
+      // The uppercase tracking of the label would tear the two slashes apart.
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  &__name {
+    display: block;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+  }
+
+  &__role {
+    display: block;
+    margin-block-start: 0.5rem;
+    // Brand gradient across the role line, with an opaque fallback color for
+    // engines that ignore `background-clip: text`.
+    color: var(--my-color-primary-strong);
+    background: linear-gradient(
+      100deg,
+      var(--my-color-primary-strong),
+      tokens.$color-primary-300
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: clamp(1.125rem, 3.2vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  &__text {
+    margin: 0.875rem 0 0;
+    max-inline-size: 40rem;
+    color: var(--my-color-ink-muted);
+    font-size: clamp(1rem, 2vw, 1.0625rem);
+  }
+
+  // The first paragraph leads the text and therefore stands a little larger.
+  &__text--lead {
+    margin-block-start: clamp(1.5rem, 4vw, 2rem);
+    color: var(--my-color-ink);
+    font-size: clamp(1.0625rem, 2.2vw, 1.25rem);
+  }
+
+  /* Focus areas */
+
+  &__focus {
+    --my-chips-margin: clamp(1.5rem, 4vw, 2rem) 0 0;
+  }
+
+  /* Actions */
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-block-start: clamp(1.75rem, 4vw, 2.25rem);
+  }
+
+  // Shape, colour and motion come from `Cta`; the main way in the hero only
+  // stands a little wider than the buttons in the cards further down.
+  &__action {
+    --my-cta-padding: 0.8125rem 1.375rem;
+  }
+
+  &__action-icon {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+  }
+
+  /* Image column */
+
+  &__visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // A band above and below the portrait for the two glyphs to stand in
+    // without being swallowed by the cut-out silhouette. It is exactly as tall
+    // as the glyphs themselves.
+    --my-presenter-glyph-size: clamp(3.5rem, 9vw, 6.5rem);
+
+    padding-block: calc(var(--my-presenter-glyph-size) + 0.75rem);
+    min-block-size: 20rem;
+  }
+
+  // The portrait carries this column on its own. The source is already cut out,
+  // so it stands on the section ground without a frame behind it.
+  &__portrait {
+    // It drifts like the two marks behind it, but flatter and slower: a figure
+    // that travels as far as they do pulls the eye away from the face. The
+    // longer cycle also keeps it from moving in lockstep with them.
+    --my-presenter-float-distance: 0.75rem;
+
+    position: relative;
+    inline-size: min(100%, 26rem);
+    aspect-ratio: 1;
+    margin: 0;
+    animation: my-presenter-float 18s ease-in-out infinite;
+  }
+
+  &__portrait-image {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    // 50px in rem, so the radius scales with the font size like everything else
+    // on the page.
+    border-radius: 3.125rem;
+    // The cut-out ends in a hard line at the shoulders; the fade lets it settle
+    // into the section ground instead. The touch of transparency does the same
+    // for the colours.
+    mask-image: linear-gradient(to bottom, #000 78%, transparent);
+    opacity: 0.8;
+    object-fit: cover;
+  }
+
+  // The two marks drift behind the portrait. They sit before the figure in the
+  // document, so the cut-out portrait keeps the foreground. The character is
+  // dimmed through its colour rather than `opacity`, so the glow behind it keeps
+  // its own strength.
+  &__glyph {
+    position: absolute;
+    // The glyph owns its stacking context, otherwise the glow would slip behind
+    // the section background instead of sitting behind the character.
+    isolation: isolate;
+    color: color-mix(in srgb, var(--my-color-primary-strong) 30%, transparent);
+    font-family: tokens.$font-mono;
+    font-size: var(--my-presenter-glyph-size);
+    font-weight: 700;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+    animation: my-presenter-float 14s ease-in-out infinite;
+
+    // The soft shine of the earlier orbs - now behind the glyph.
+    &::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset-block-start: 50%;
+      inset-inline-start: 50%;
+      inline-size: 12rem;
+      block-size: 12rem;
+      translate: -50% -50%;
+      border-radius: 50%;
+      filter: blur(2.75rem);
+      opacity: 0.75;
+    }
+  }
+
+  &__glyph--code {
+    inset-block-start: 0;
+    inset-inline-end: 0;
+
+    &::before {
+      background: radial-gradient(
+        circle,
+        rgba(tokens.$color-primary-400, 0.75),
+        rgba(tokens.$color-primary-500, 0)
+      );
+    }
+  }
+
+  &__glyph--braces {
+    inset-block-end: 0;
+    inset-inline-start: 0;
+    color: color-mix(in srgb, var(--my-color-accent-strong) 30%, transparent);
+    animation-delay: -7s;
+
+    &::before {
+      inline-size: 10rem;
+      block-size: 10rem;
+      background: radial-gradient(
+        circle,
+        rgba(tokens.$color-accent-400, 0.6),
+        rgba(tokens.$color-accent-500, 0)
+      );
+    }
+  }
+
+  // How far it travels is up to the animated element through
+  // `--my-presenter-float-distance`; the glyphs keep the default.
+  @keyframes my-presenter-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+
+    50% {
+      transform: translate3d(
+        0,
+        calc(var(--my-presenter-float-distance, 1.25rem) * -1),
+        0
+      );
+    }
+  }
+
+  /* Motion is pure decoration here */
+
+  @include mixins.motion-reduce {
+    &__glyph,
+    &__portrait {
+      animation: none;
+    }
+  }
+
+  /* Print output */
+
+  // Not the resume, so not on the sheet - see `parts/section/_section.scss`.
+  @media print {
+    display: none;
+  }
+}

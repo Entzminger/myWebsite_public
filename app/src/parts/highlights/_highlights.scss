@@ -1,0 +1,47 @@
+// The list of points a section makes about the thing it links to: a check
+// mark, a short label, and the sentence below it. The foundation and the
+// GitHub section carry one each, and the two were the same list twice - down
+// to the path of the check mark.
+//
+// What a section may set, all of it read here and never declared, so the
+// section's declaration is the only one in the field:
+//
+//   --my-highlights-icon  colour of the check mark; this is where the brand
+//                         colour of the linked site enters, which stays a
+//                         local variable of the section and never becomes a
+//                         token
+//
+// The label and the detail take their colour from the central tokens - they
+// are type on the section ground, not part of the foreign brand.
+
+.my-highlights {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem 0.75rem;
+  }
+
+  &__icon {
+    grid-row: 1 / span 2;
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+    margin-block-start: 0.25rem;
+    color: var(--my-highlights-icon, currentColor);
+  }
+
+  &__label {
+    color: var(--my-color-surface-invert);
+    font-weight: 600;
+  }
+
+  &__detail {
+    color: var(--my-color-ink-muted);
+    font-size: 0.9375rem;
+  }
+}

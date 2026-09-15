@@ -1,0 +1,48 @@
+@use '@/assets/styles/tokens' as tokens;
+
+// The shared ground of every page section. Everything the sections have in
+// common - the dark ground, the type defaults and the block rhythm - lives
+// here once instead of seven times. Sections keep only what makes them
+// different (their glows, their layout) in their own partial.
+//
+// `Section.vue` binds this file *without* `scoped`, so `.my-section` stays a
+// plain class of one specificity, and that is load-bearing. A section
+// overrides some of these declarations on the very same element -
+// `.my-privacy` lifts the `overflow`, both printed sections drop the padding -
+// and those partials are `scoped`, so their selectors weigh 0-2-0. Against
+// this 0-1-0 they win every time. Were this file `scoped` too, its rules would
+// weigh the same and the winner would be whoever the bundler happened to put
+// last.
+//
+// Printing the start page is the PDF export of the resume, so every other
+// section stays off the sheet. Each one says that itself, in its own partial,
+// the way `parts/footer` and `parts/navi` do - there is no central rule that
+// decides it for them. The resume is simply the section without such a block,
+// and the privacy notice prints whole because it is a document of its own on a
+// route of its own.
+//
+// The tokens are not among them: they are defined once on `:root` in
+// `base.scss` and inherit from there. Setting them again here would pin the
+// dark palette to this element, where it would outrank the inherited value -
+// and the print sheet, which swaps `:root` to the print palette, would never
+// reach the sections.
+.my-section {
+  position: relative;
+  // Vertical breathing room: generous on small screens, but capped well below
+  // the viewport so the wide layout does not open up a gap above and below the
+  // content.
+  padding-block: clamp(3rem, 6vw, 5rem);
+  // As a custom property because a section may need to hand it back: something
+  // that belongs to the edge of the screen rather than to the text column has
+  // to leave this padding again.
+  --my-section-padding-inline: 1.25rem;
+
+  padding-inline: var(--my-section-padding-inline);
+  // Breathing room when the navigation jumps here.
+  scroll-margin-block-start: 1.5rem;
+  overflow: hidden;
+  color: var(--my-color-ink);
+  background-color: var(--my-color-surface-alt);
+  font-family: tokens.$font-body;
+  line-height: 1.6;
+}

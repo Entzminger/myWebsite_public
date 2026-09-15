@@ -1,0 +1,232 @@
+@use '@/assets/styles/tokens' as tokens;
+
+// The privacy notice is the quiet twin of the imprint: same eyebrow, same
+// heading, no glow of its own. It is a legal duty, not a stage - and unlike
+// the imprint it is long, so its chapters are stacked as separate cards in a
+// column narrow enough to read.
+//
+// Ground, spacing and type come from the shared `.my-section` class in
+// `parts/section/_section.scss`.
+
+.my-privacy {
+  // `.my-section` clips its content because the other sections carry glows
+  // that would otherwise bleed out. This one carries none - and the clip would
+  // turn the section into a scroll container, in which the button below could
+  // never stick.
+  overflow: visible;
+
+  // The section is a focus target (`tabindex="-1"`), which some browsers ring
+  // when the navigation jumps here. The heading below says where you are.
+  &:focus {
+    outline: none;
+  }
+
+  &__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2rem, 5vw, 3rem);
+    max-inline-size: 72rem;
+    margin-inline: auto;
+  }
+
+  /* Header */
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    color: var(--my-color-primary-strong);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    &::before {
+      content: '//';
+      font-family: tokens.$font-mono;
+      font-size: 1.15em;
+      font-weight: 700;
+      // The uppercase tracking of the label would tear the two slashes apart.
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__lead {
+    margin: 0;
+    max-inline-size: 42rem;
+    color: var(--my-color-ink-muted);
+  }
+
+  /* Chapters */
+
+  &__chapters {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  // Ground, frame and padding come from `Card`; the blocks inside bring their
+  // own rhythm, so the card adds no row gap on top of it.
+  &__chapter {
+    --my-card-gap: 1.75rem;
+  }
+
+  &__chapter-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__block {
+    display: grid;
+    gap: 0.625rem;
+  }
+
+  &__block-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__text {
+    margin: 0;
+    color: var(--my-color-ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  &__address {
+    display: grid;
+    gap: 0.125rem;
+    justify-items: start;
+    margin: 0.25rem 0 0;
+    color: var(--my-color-ink);
+    font-style: normal;
+    font-size: 0.9375rem;
+  }
+
+  &__address-line {
+    // Long values like the address break by line, not mid-word.
+    word-break: break-word;
+  }
+
+  &__list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding-inline-start: 1.25rem;
+    color: var(--my-color-ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  &__item::marker {
+    color: var(--my-color-primary-strong);
+  }
+
+  // The same treatment the links in the imprint get: the brand tone, fully
+  // underlined, and on hover the rule thickens instead of the colour changing.
+  &__link {
+    color: var(--my-color-primary-strong);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    word-break: break-word;
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--my-color-primary-strong);
+      outline-offset: 3px;
+    }
+  }
+
+  &__source {
+    margin: 0;
+    color: var(--my-color-ink-subtle);
+    font-size: 0.8125rem;
+  }
+
+  /* The way back */
+
+  // The button rides along in the lower right corner instead of waiting at the
+  // end of a long text - the same corner, and the same distance from the edge of
+  // the screen, as the back-to-top button of the page. The section pads the
+  // notice inwards, so the bar hands that padding back before setting its own.
+  &__back-bar {
+    position: sticky;
+    inset-block-end: clamp(1rem, 3vw, 2rem);
+    // Above the text it floats over, below the navigation bar (z-index 100).
+    z-index: 10;
+    display: flex;
+    justify-content: flex-end;
+    margin-inline: calc(-1 * var(--my-section-padding-inline));
+    padding-inline-end: clamp(1rem, 3vw, 2rem);
+    // Room of its own, so the last line of the text is not covered once the
+    // button comes to rest at the foot of the notice.
+    margin-block-start: clamp(1.5rem, 4vw, 2.5rem);
+    // The bar spans the full width; only the button itself may take the click.
+    pointer-events: none;
+  }
+
+  // Shape, ground and motion come from `Cta`.
+  &__back {
+    --my-cta-margin: 0;
+
+    pointer-events: auto;
+  }
+
+  &__back-icon {
+    inline-size: 1.125rem;
+    block-size: 1.125rem;
+  }
+
+  &__sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Print output */
+
+  // The notice is a document of its own and prints whole - it has no block
+  // that takes it off the sheet, only these adjustments for paper.
+  @media print {
+    padding: 0;
+    background: none;
+
+    &__chapter {
+      --my-card-background: transparent;
+      --my-card-border-color: var(--my-color-border-strong);
+      --my-card-shadow: none;
+    }
+
+    // A single block is short enough to stay whole; a whole chapter is not.
+    &__block {
+      break-inside: avoid;
+    }
+
+    // The button is a control, not content - it has no place on the sheet.
+    &__back-bar {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  // The Playwright tests and their configuration. Nuxt generates four
+  // projects under `.nuxt/` (`app`, `server`, `shared`, `node`); `tests/e2e/**`
+  // falls into none of them - only `tests/nuxt/**` would be covered. Without
+  // this project the specs would therefore ride along unchecked.
+  //
+  // The options match those of `.nuxt/tsconfig.app.json`, so that the
+  // constants imported from `app/src/*/*.data.ts` are read here exactly as
+  // they are in the application itself.
+  "compilerOptions": {
+    // The same `@` alias as in the application. Playwright reads it from this
+    // file, because `playwright.config.ts` names it as its `tsconfig` - the
+    // root `tsconfig.json` holds references only and no `paths`.
+    //
+    // Deliberately without `baseUrl`: since TypeScript 4.1 `paths` resolves
+    // against this file's own directory, and the four projects Nuxt generates
+    // under `.nuxt/` do it the same way. `baseUrl` would additionally make
+    // every bare import resolve against the root, so a folder like `app` or
+    // `tests` could quietly shadow a package of that name.
+    "paths": {
+      "@/*": ["./app/*"]
+    },
+    "target": "ESNext",
+    "module": "preserve",
+    "moduleResolution": "Bundler",
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmit": true,
+    // Like the four Nuxt projects, this one puts its build cache under
+    // `.nuxt/` instead of leaving it in the root directory.
+    "tsBuildInfoFile": "./.nuxt/tsconfig.test.tsbuildinfo",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
+  },
+  "include": ["tests/**/*.ts", "playwright.config.ts"]
+}

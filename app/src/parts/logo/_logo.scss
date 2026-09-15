@@ -1,0 +1,33 @@
+@use '@/assets/styles/tokens' as tokens;
+
+.my-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // Opaque primary gradient so the mark keeps its contrast on the dark ground.
+  background-image: linear-gradient(
+    tokens.$color-primary-400,
+    tokens.$color-primary-600
+  );
+  box-shadow:
+    0 0 0 1px rgba(tokens.$color-primary-400, 0.35),
+    0 6px 18px -8px rgba(tokens.$color-primary-500, 0.6);
+  // One knob for the whole mark: the circle and the letter inside it scale
+  // together, so a host only has to override this value.
+  --my-logo-size: 2.5rem;
+
+  height: var(--my-logo-size);
+  width: var(--my-logo-size);
+  border-radius: 50%;
+  color: tokens.$color-primary-950;
+  margin: 1rem 0;
+
+  // The glyph is an outline rather than a letter (see `logo.data.ts`), and it
+  // keeps the proportion the font gave it: 779 of 1000 em units, set at 0.875 of
+  // the mark. The default `preserveAspectRatio` fits it by its height - the
+  // limiting side here - and centres it in the circle.
+  &__glyph {
+    block-size: 68.2%;
+    inline-size: 100%;
+  }
+}

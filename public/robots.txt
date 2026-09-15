@@ -1,0 +1,19 @@
+# https://entzminger.dev/ - a single, entirely public page.
+# There is nothing that should stay uncrawled: no login areas, no search
+# results, no parameter URLs. That is why this file stays as short as it is.
+#
+# The AI crawlers (GPTBot, ClaudeBot, PerplexityBot and the rest) are welcome
+# too, explicitly. On a page written to apply for work it is wanted that an
+# assistant asked about me finds my own account rather than someone else's.
+# The short version written for exactly those readers: /llms.txt
+
+User-agent: *
+Allow: /
+
+# Nothing is disallowed here on purpose. The privacy notice at /privacy
+# asks to stay out of the index, but it says so itself, with a robots meta tag
+# - and a crawler that is not allowed to fetch the page never gets to read it.
+#
+# No sitemap reference: the site has a single indexable URL, reachable through
+# the domain itself - a sitemap.xml with one entry tells no crawler anything
+# it does not already know.

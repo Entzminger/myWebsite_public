@@ -1,0 +1,93 @@
+@use '@/assets/styles/tokens' as tokens;
+
+// Chip lists. The block always lives inside a section and inherits its custom
+// properties - tokens of its own are therefore none of its business.
+//
+// Colour runs entirely through `--my-chips-border`, `--my-chips-background`,
+// `--my-chips-ink` and `--my-chips-shadow`. The size sets the neutral default,
+// the colour modifiers on the chip override it, and a section with a brand
+// colour of its own overrides it on the list.
+//
+// The margin towards the outside belongs to the surroundings: the list only
+// resets the browser default and takes one in through `--my-chips-margin`. As
+// a custom property, because a class of the section at the root of the
+// component would have the same specificity as `.my-chips` itself and would
+// win on nothing but the order in the bundle.
+
+.my-chips {
+  // Small chips sit inside a card and set themselves off downwards.
+  --my-chips-border: var(--my-color-border);
+  --my-chips-background: var(--my-color-surface-alt);
+  --my-chips-ink: var(--my-color-ink-muted);
+  --my-chips-shadow: none;
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: var(--my-chips-margin, 0);
+  padding: 0;
+  list-style: none;
+
+  // Large chips stand on the section ground and have to lift off it.
+  &--large {
+    --my-chips-background: var(--my-color-surface);
+    --my-chips-shadow: #{tokens.$shadow-sm};
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--my-chips-border);
+    border-radius: tokens.$radius-pill;
+    background-color: var(--my-chips-background);
+    box-shadow: var(--my-chips-shadow);
+    color: var(--my-chips-ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  &--small &__chip {
+    padding: 0.3125rem 0.75rem;
+    font-size: 0.8125rem;
+  }
+
+  &--large &__chip {
+    padding: 0.4375rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  /* Colour settings */
+
+  // `neutral` is the default and needs no rule of its own; the class sits on the
+  // chip all the same, so that the colour setting can be read off the DOM.
+
+  &__chip--primary {
+    --my-chips-border: var(--my-color-primary-soft);
+    --my-chips-background: var(--my-color-primary-tint);
+    --my-chips-ink: var(--my-color-primary-strong);
+  }
+
+  &__chip--accent {
+    --my-chips-border: var(--my-color-accent-soft);
+    --my-chips-background: var(--my-color-accent-tint);
+    --my-chips-ink: var(--my-color-accent-strong);
+  }
+
+  /* Icon */
+
+  &__icon {
+    // The icon carries the brand, even where the chip itself stays neutral.
+    flex: none;
+    inline-size: 1rem;
+    block-size: 1rem;
+    color: var(--my-color-primary-strong);
+  }
+
+  @media print {
+    // On paper the shadow turns into nothing but a grey edge.
+    &__chip {
+      --my-chips-shadow: none;
+    }
+  }
+}

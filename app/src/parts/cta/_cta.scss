@@ -1,0 +1,120 @@
+// The loud button of the site: the main action in the hero, the two links to
+// the sites the page points at, the submit of the contact form. Shape, motion
+// and focus ring live here; the label and its icons come from the section
+// through the default slot and keep that section's scoped styles.
+//
+// Colour runs over one stance per value of `CtaColor`, `.my-cta--*`. `brand`
+// is the exception and has no rule of its own: sections that link to a foreign
+// mark set its tones on the element themselves, the way `_github.scss` and
+// `_foundation.scss` do - those colours belong to the linked brand and not to
+// the design system. The class stands at the element regardless, so the stance
+// can be read off the DOM.
+//
+// What a section may set, all of it only read here and never declared at the
+// same selector, so the section's declaration is the only one in the field:
+//
+//   --my-cta-from / --my-cta-to          the two ends of the gradient ground
+//   --my-cta-glow / --my-cta-glow-hover  the coloured shadow beneath it
+//   --my-cta-ink                         the label
+//   --my-cta-border                      the frame, none on a filled stance
+//   --my-cta-padding                     inner spacing
+//   --my-cta-margin                      the space to what stands above it
+
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+.my-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  margin: var(--my-cta-margin, 0);
+  padding: var(--my-cta-padding, 0.75rem 1.25rem);
+  border: var(--my-cta-border, 0);
+  border-radius: tokens.$radius-pill;
+  background: linear-gradient(
+    135deg,
+    var(--my-cta-from, transparent),
+    var(--my-cta-to, transparent)
+  );
+  box-shadow: 0 12px 24px -12px var(--my-cta-glow, transparent);
+  color: var(--my-cta-ink, var(--my-color-surface-invert));
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 16px 28px -12px var(--my-cta-glow-hover, transparent);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--my-color-ink);
+    outline-offset: 3px;
+  }
+
+  /* Colour settings */
+
+  // Dark ink on the brand orange keeps the main action loud and still above
+  // 4.5:1 - the same recipe as the resume export button.
+  &--primary {
+    --my-cta-from: var(--my-color-primary);
+    --my-cta-to: #{tokens.$color-primary-400};
+    --my-cta-glow: #{rgba(tokens.$color-primary-500, 0.8)};
+    --my-cta-glow-hover: #{rgba(tokens.$color-primary-500, 0.9)};
+    --my-cta-ink: #{tokens.$color-ink-950};
+
+    // The dark label keeps its contrast when the ground brightens, so this
+    // stance is the only one that may take the light on hover.
+    &:hover {
+      filter: brightness(1.08);
+    }
+  }
+
+  // The white label clears 4.5:1 on both ends of this gradient. No brightening
+  // on hover: it would lift the cyan far enough to push the label below that,
+  // which is why the lift and the wider glow carry the state on their own.
+  &--accent {
+    --my-cta-from: #{tokens.$color-accent-800};
+    --my-cta-to: #{tokens.$color-accent-700};
+    --my-cta-glow: #{rgba(tokens.$color-accent-500, 0.8)};
+    --my-cta-glow-hover: #{rgba(tokens.$color-accent-500, 0.9)};
+  }
+
+  // The quiet second way beside a loud one: no ground of its own, the frame
+  // carries it, and the hover reaches for the primary instead of a glow.
+  &--neutral {
+    --my-cta-from: var(--my-color-surface);
+    --my-cta-to: var(--my-color-surface);
+    --my-cta-border: 1px solid var(--my-color-border-strong);
+    --my-cta-ink: var(--my-color-ink);
+
+    &:hover {
+      border-color: var(--my-color-primary-soft);
+      color: var(--my-color-primary-strong);
+    }
+  }
+
+  // The lift is pure decoration, the contrast already carries the affordance.
+  @include mixins.motion-reduce {
+    transition: none;
+
+    &:hover {
+      filter: none;
+      transform: none;
+    }
+  }
+}

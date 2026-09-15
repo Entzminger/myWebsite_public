@@ -1,0 +1,33 @@
+{
+  "name": "myWebsite",
+  "homepage": "https://entzminger.dev/",
+  "version": "0.0.1",
+  "description": "myWebsite",
+  "author": "Philipp Entzminger",
+  "license": "myWebsite",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "nuxt": "^4.3.0",
+    "vue": "^3.5.27",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^24",
+    "sass": "^1.104.0",
+    "typescript": "^5.9.0",
+    "vue-tsc": "^3.3.11"
+  }
+}

@@ -1,0 +1,159 @@
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+// The page ends quietly. Every section above carries a glow of its own; this
+// one deliberately carries none - the imprint is a legal duty, not a stage.
+//
+// Ground, spacing and type come from the shared `.my-section` class in
+// `parts/section/_section.scss`; only what sets this section apart lives here.
+// The block itself therefore carries no declarations of its own - it stands
+// here so its elements can nest under it, and Sass emits nothing for it.
+
+.my-imprint {
+  &__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2rem, 5vw, 3rem);
+    max-inline-size: 72rem;
+    margin-inline: auto;
+  }
+
+  /* Header */
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    // The orange of the hero closes the page the way it opened it.
+    color: var(--my-color-primary-strong);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    &::before {
+      content: '//';
+      font-family: tokens.$font-mono;
+      font-size: 1.15em;
+      font-weight: 700;
+      // The uppercase tracking of the label would tear the two slashes apart.
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__lead {
+    margin: 0;
+    max-inline-size: 42rem;
+    color: var(--my-color-ink-muted);
+  }
+
+  /* Provider details and legal notes */
+
+  &__body {
+    display: grid;
+    gap: clamp(2rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  // The rows of this card stand closer together than the blocks of the other
+  // cards; ground and frame come from `Card`.
+  &__card {
+    --my-card-gap: 1.5rem;
+  }
+
+  &__card-title {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__entries {
+    display: grid;
+    gap: 1.25rem;
+    margin: 0;
+  }
+
+  &__entry-label {
+    margin: 0 0 0.25rem;
+    color: var(--my-color-ink-subtle);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  &__entry-value {
+    display: grid;
+    // The browser indents a `dd` by default; the label above it sets the edge.
+    margin-inline-start: 0;
+    color: var(--my-color-ink);
+  }
+
+  &__entry-line {
+    // Long values like the address break by line, not mid-word.
+    word-break: break-word;
+  }
+
+  &__link {
+    color: var(--my-color-primary-strong);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+
+    &:focus-visible {
+      outline: 3px solid var(--my-color-primary-strong);
+      outline-offset: 3px;
+    }
+  }
+
+  &__notes {
+    display: grid;
+    gap: 1.75rem;
+    max-inline-size: 42rem;
+  }
+
+  &__note-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__note-text {
+    margin: 0 0 0.75rem;
+    color: var(--my-color-ink-muted);
+    font-size: 0.9375rem;
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+  }
+
+  @include mixins.bp-lg {
+    &__body {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+  }
+
+  /* Print output */
+
+  // Not the resume, so not on the sheet - see `parts/section/_section.scss`.
+  @media print {
+    display: none;
+  }
+}

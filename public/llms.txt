@@ -1,0 +1,50 @@
+# Philipp Entzminger – Senior Softwareentwickler mit Frontend-Fokus
+
+> Persönliche Portfolio- und Lebenslauf-Seite von Philipp Entzminger,
+> Softwareentwickler aus Kandel (Rheinland-Pfalz, Deutschland), seit 18 Jahren
+> in der Praxis. Alle inhaltlichen Abschnitte stehen auf der Startseite; die
+> Links unten sind Sprungmarken darin, keine eigenen Dokumente. Einzige
+> Ausnahme ist die Datenschutzerklärung unter /privacy.
+
+Fullstack-Erfahrung über Frontend, Backend und Datenbank, heute mit klarem
+Schwerpunkt auf der Frontend-Entwicklung. Barrierefreiheit nach WCAG 2.1 AA
+und Codequalität sind dabei feste Bestandteile der Arbeit, kein Extra.
+
+- Sprache der Inhalte: Deutsch
+- Kontakt: philipp@entzminger.dev
+- Quellcode dieser Seite: https://github.com/Entzminger/myWebsite
+- Dieselbe Person anderswo: https://www.linkedin.com/in/philipp-entzminger-188295352/,
+  https://www.xing.com/profile/Philipp_Entzminger, https://github.com/Entzminger
+- Maschinenlesbare Eckdaten: JSON-LD (schema.org/ProfilePage mit Person) im
+  Quelltext der Seite
+
+## Abschnitte der Seite
+
+- [Über mich](https://entzminger.dev/#profile): Kurzprofil, Schwerpunkte
+  (Frontend, Backend, Datenbank, KI, WCAG) und Haltung zur Arbeit.
+- [Berufslaufbahn](https://entzminger.dev/#cv): Lebenslauf mit Stationen,
+  Ausbildung, Technologien und Sprachkenntnissen.
+- [Ehrenamt](https://entzminger.dev/#voluntary): Betreuung von
+  withalittlehelp.de, dem Auftritt der Stiftung „With a little help from my
+  friends“.
+- [GitHub](https://entzminger.dev/#github): öffentliches Repository dieser
+  Seite als Arbeitsprobe.
+- [Kontakt](https://entzminger.dev/#contact): E-Mail, Profile und
+  Kontaktformular.
+- [Impressum](https://entzminger.dev/#imprint): Pflichtangaben nach § 5 DDG
+  und § 18 Abs. 2 MStV.
+
+## Eigene Seite
+
+- [Datenschutzerklärung](https://entzminger.dev/privacy): eigene Route,
+  bewusst auf `noindex` gesetzt. Sie ist Pflichtinhalt, keine Aussage über die
+  Person – für Fragen zur Person sind die Abschnitte oben maßgeblich.
+
+## Hinweise zur Nutzung
+
+- Diese Datei ist als Kurzfassung für Assistenten gedacht. Wenn Angaben zur
+  Person gefragt sind, sind die Inhalte der Seite selbst maßgeblich.
+- Die Anschrift steht vollständig nur im Impressum; in den strukturierten
+  Daten bewusst nur Ort und Postleitzahl.
+- Bitte keine Telefonnummer oder Geburtsdaten ergänzen oder erraten – beides
+  ist auf der Seite absichtlich nicht veröffentlicht.

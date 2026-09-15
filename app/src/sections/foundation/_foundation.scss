@@ -1,0 +1,237 @@
+@use '@/assets/styles/tokens' as tokens;
+@use '@/assets/styles/mixins' as mixins;
+
+// The green of withalittlehelp.de, taken from that site's own stylesheet. It
+// belongs to the linked foundation, not to this site's palette, and stays
+// local to this block instead of becoming a token.
+// Contrast on the section ground (ink-950): `mid` 7.1:1, `strong` 11.0:1.
+$foundation-green: #61aa61; // brand tone – glow, borders and chip grounds
+$foundation-green-strong: #86d186; // labels and icons on the section ground
+$foundation-green-deep: #1c7c1c; // light end of the button gradient
+$foundation-green-deeper: #145c14; // dark end of the button gradient
+$foundation-cream: #effcf2; // the near-white the site draws its own mark in
+
+// Ground, spacing and type come from the shared `.my-section` class in
+// `parts/section/_section.scss`; only what sets this section apart lives here.
+.my-foundation {
+  // Green glow in the vertical middle of the block, behind the copy and the
+  // card. Away from the edges it cannot blur into the warm glow of the resume
+  // above.
+  &::before {
+    content: '';
+    position: absolute;
+    inset-inline: -20%;
+    // Both edges pinned plus a fixed height: the auto margins then centre the
+    // band in the section, whatever height its content gives it.
+    inset-block: 0;
+    block-size: 60vh;
+    margin-block: auto;
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 50%,
+      rgba($foundation-green, 0.22),
+      rgba($foundation-green, 0) 70%
+    );
+    pointer-events: none;
+  }
+
+  &__inner {
+    position: relative;
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+    max-inline-size: 72rem;
+    margin-inline: auto;
+  }
+
+  /* Text column */
+
+  &__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem;
+    color: $foundation-green-strong;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+
+    &::before {
+      content: '//';
+      font-family: tokens.$font-mono;
+      font-size: 1.15em;
+      font-weight: 700;
+      // The uppercase tracking of the label would tear the two slashes apart.
+      letter-spacing: -0.02em;
+    }
+  }
+
+  &__title {
+    margin: 0 0 1rem;
+    font-size: clamp(1.875rem, 4vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--my-color-surface-invert);
+  }
+
+  &__lead {
+    margin: 0 0 1rem;
+    max-inline-size: 42rem;
+    font-size: clamp(1.0625rem, 2vw, 1.25rem);
+    color: var(--my-color-ink);
+  }
+
+  &__text {
+    margin: 0 0 2rem;
+    max-inline-size: 42rem;
+    color: var(--my-color-ink-muted);
+  }
+
+  // The list itself is `parts/highlights`; only the brand colour of
+  // its check marks belongs to this section.
+  &__highlights {
+    --my-highlights-icon: #{$foundation-green-strong};
+  }
+
+  &__card-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+  }
+
+  &__card-icon {
+    // The one place the mark is shown the way the foundation itself uses it:
+    // green stairs on a light ground instead of a single flat colour.
+    --my-foundation-logo-plate: #{$foundation-cream};
+    --my-foundation-logo-stairs: #{$foundation-green};
+
+    grid-row: 1 / span 2;
+    inline-size: 2.5rem;
+    block-size: auto;
+    // Carries the frame, which the original draws in the same white as the
+    // ground and lets glow faintly. The glow is kept at the original's 2px
+    // rather than scaled down with the mark - at this size it would vanish.
+    color: $foundation-cream;
+    filter: drop-shadow(0 0 3px $foundation-cream);
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--my-color-surface-invert);
+    // The name is a whole English sentence and must be allowed to wrap rather
+    // than push the card wider.
+    text-wrap: balance;
+  }
+
+  &__domain {
+    margin: 0;
+    color: var(--my-color-ink-muted);
+    font-family: tokens.$font-mono;
+    font-size: 0.8125rem;
+  }
+
+  /* Figures */
+
+  &__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin: 0;
+    padding-block: 0.75rem;
+    border-block: 1px solid var(--my-color-border);
+  }
+
+  &__fact {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__fact-label {
+    margin: 0;
+    // A description list needs the term before its value in the markup, but the
+    // figure carries the block, so the two are swapped visually.
+    order: 2;
+    color: var(--my-color-ink-subtle);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  &__fact-value {
+    margin: 0;
+    order: 1;
+    color: $foundation-green-strong;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  &__card-text {
+    margin: 0;
+    color: var(--my-color-ink-muted);
+    font-size: 0.9375rem;
+  }
+
+  // The chips themselves come from the shared `Chips` block; only the green is
+  // this section's own, so it is handed over as custom properties.
+  &__purposes {
+    --my-chips-border: #{rgba($foundation-green, 0.6)};
+    --my-chips-background: #{rgba($foundation-green, 0.16)};
+    // 6.7:1 on the tinted ground inside the card.
+    --my-chips-ink: #{$foundation-green-strong};
+  }
+
+  /* The link out */
+
+  // Shape and motion come from `Cta`; only the foundation's own tones stand
+  // here.
+  // The brand green itself is far too light to carry a white label (2.8:1), so
+  // the gradient runs over the dark steps of that green - there white clears
+  // 4.5:1 at both ends.
+  &__cta {
+    --my-cta-from: #{$foundation-green-deeper};
+    --my-cta-to: #{$foundation-green-deep};
+    --my-cta-glow: #{rgba($foundation-green, 0.8)};
+    --my-cta-glow-hover: #{rgba($foundation-green, 0.9)};
+  }
+
+  &__cta-icon {
+    inline-size: 1.75rem;
+    block-size: auto;
+  }
+
+  &__cta-arrow {
+    inline-size: 1rem;
+    block-size: 1rem;
+  }
+
+  &__sr-only {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @include mixins.bp-lg {
+    &__inner {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      align-items: center;
+    }
+  }
+
+  /* Print output */
+
+  // Not the resume, so not on the sheet - see `parts/section/_section.scss`.
+  @media print {
+    display: none;
+  }
+}
