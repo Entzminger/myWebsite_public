@@ -12,7 +12,7 @@ und Codequalität sind dabei feste Bestandteile der Arbeit, kein Extra.
 
 - Sprache der Inhalte: Deutsch
 - Kontakt: philipp@entzminger.dev
-- Quellcode dieser Seite: https://github.com/Entzminger/myWebsite
+- Quellcode dieser Seite: https://github.com/Entzminger/myWebsite_public
 - Dieselbe Person anderswo: https://www.linkedin.com/in/philipp-entzminger-188295352/,
   https://www.xing.com/profile/Philipp_Entzminger, https://github.com/Entzminger
 - Maschinenlesbare Eckdaten: JSON-LD (schema.org/ProfilePage mit Person) im

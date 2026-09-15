@@ -69,7 +69,7 @@ export const highlights: Highlight[] = [
 /** The repository of this website, the one this section links to. */
 export const repository: GithubRepository = {
   fullName: 'Entzminger/myWebsite',
-  url: 'https://github.com/Entzminger/myWebsite',
+  url: 'https://github.com/Entzminger/myWebsite_public',
   description:
     'Persönliche Website als Nuxt-4-Single-Page: Vue mit Composition API – serverseitig gerendert und barrierefrei.',
   branch: 'main',
