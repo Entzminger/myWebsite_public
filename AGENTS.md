@@ -8,8 +8,11 @@ Persönliche Portfolio-/Lebenslauf-Website für einen erfahrenen Softwareentwick
 Modernes, frisches, künstlerisches Webdesign; die Startseite trägt alle Inhalte
 auf einer einzelnen Seite (Single Page).
 
-`app/app.vue` ist nur noch der Rahmen: Navigation (mit Logo), `<NuxtPage>` und
-der Footer als letztes Element. Die Sektionen stehen in dieser Reihenfolge in
+`app/app.vue` ist nur noch der Rahmen: Navigation (mit Logo), `<NuxtPage>` in
+der `<main>`-Landmark und der Footer als letztes Element. Das `<main>` steht
+dort und nicht in einer Seite: jede Route braucht genau eine, und es gibt nur
+ein `<NuxtPage>` zum Umschließen. Es trägt keine Klasse und keine Styles – es
+ist nichts als die Landmark. Die Sektionen stehen in dieser Reihenfolge in
 `app/pages/index.vue`: Presenter, Lebenslauf (Resume), Ehrenamt (Foundation),
 GitHub, Kontakt und Impressum, dazu BackToTop als letztes.
 
@@ -46,7 +49,7 @@ Live-Domain: entzminger.dev
 
 Details und Begründungen siehe Skill **`architecture`**.
 
-- `app/app.vue` – Rahmen um jede Route (Navi, `<NuxtPage>`, Footer), keine Logik
+- `app/app.vue` – Rahmen um jede Route (Navi, `<main>` um `<NuxtPage>`, Footer), keine Logik
 - `app/pages/` – `index.vue` (die Startseite mit allen Sektionen) und
   `privacy.vue` (die Erklärung unter `/privacy`, `noindex`)
 - `app/src/` zerfällt in genau zwei Ordner. Die Regel dafür ist prüfbar: Was
@@ -79,17 +82,39 @@ Details und Begründungen siehe Skill **`architecture`**.
   Seite setzt ausschließlich Systemschriften, und das „E“ der Wortmarke ist ein
   SVG-Pfad in `app/src/parts/logo/logo.data.ts`. Das ersetzt eine 802-KB-Datei,
   die für genau diesen einen Buchstaben geladen wurde.
+- Das Porträt liegt in drei Fassungen unter `app/assets/img/`:
+  `philipp.png` (2364 px) ist der **Master** – nicht importiert, nicht
+  ausgeliefert, nur die Quelle. Ausgeliefert werden `philipp-640.png` und
+  `philipp-832.png`, die der Presenter über ein `<picture>` nach Breakpoint
+  auswählt. Sie sind aus dem Master **gerendert**, nicht von Hand gepflegt: die
+  Farben per Nearest Neighbour (die Vorlage ist posterisiert, ein glättender
+  Filter erfindet dort nur Zwischentöne und bläht die Datei auf), der
+  Alphakanal per echtem Resample, damit die Silhouette weich bleibt. Der Master
+  war 369 KB für eine Box, die nie breiter als 416 px ist.
 - Der **führende Unterstrich** an einer `.scss` ist keine Schreibweise, sondern
   eine Ansage an Sass: eine `_datei.scss` ist ein *Partial* und wird nie für
   sich kompiliert, sondern nur per `@use` hineingezogen. `base.scss` ist
   deshalb die einzige Datei ohne ihn – sie ist der Einstieg, den
   `nuxt.config.ts` als einziges `css`-Entry nennt. Jede neue Style-Datei
   bekommt den Unterstrich.
-- `public/` – statische, unverarbeitete Assets (favicon, robots.txt, llms.txt,
-  `philipp-entzminger.png` als Vorschaubild für geteilte Links). Dazu
-  `logo.svg`, die Marke als eigenständige Datei: im Projekt selbst **nicht
-  benutzt**, sondern bewusst unter `entzminger.dev/logo.svg` erreichbar, damit
-  anderswo darauf verwiesen werden kann – nicht als toten Ballast entfernen.
+- `public/` – statische, unverarbeitete Assets (favicon, robots.txt, llms.txt).
+  Dazu `logo.svg`, `logo.png` und `logo.jpg`, die Marke als eigenständige
+  Datei, bewusst unter `entzminger.dev/logo.svg` (bzw. `.png`, `.jpg`)
+  erreichbar, damit anderswo darauf verwiesen werden kann – nicht als toten
+  Ballast entfernen. Dazu `logo-256.png`, dieselbe Marke in klein und aus
+  `logo.svg` gerendert. Beide PNGs dienen dem Teilen (siehe `parts/person`):
+  ein geteilter Link trägt die Marke, nicht das Porträt. `logo.png` steht in
+  den strukturierten Daten, `logo-256.png` ist das `og:image` – und seine
+  Größe ist der Zweck: Meta dokumentiert, dass WhatsApp ab 300 px Breite die
+  breite Banner-Vorschau zeichnet und darunter die kompakte Karte mit dem
+  Bild links. 256 px kauft die kompakte Karte. **Nicht vergrößern**, sonst
+  kippt das Layout zurück. Beide liegen in `public/` und nicht in `assets/` –
+  eine URL, die andere Dienste zwischenspeichern, muss über Builds hinweg
+  dieselbe bleiben, der Hash eines verarbeiteten Assets tut das nicht. PNG und
+  JPG sind die Fassungen für Stellen, die kein SVG annehmen, beide 1024 × 1024
+  und aus `logo.svg` gerendert, nicht von Hand gepflegt. Der Unterschied liegt
+  nur in den Ecken neben der Scheibe: das PNG lässt sie transparent, das JPG
+  muss sie weiß füllen, weil JPEG keine Transparenz kennt.
 - `tests/e2e/` – Playwright-Specs, ein File pro Sektion bzw. Baustein
 - `nuxt.config.ts` – Nuxt-Konfiguration
 - `.github/workflows/` – CI (Typecheck, Build, E2E bei jedem Push) und Deploy

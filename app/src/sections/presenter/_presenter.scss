@@ -200,6 +200,14 @@
     animation: my-presenter-float 18s ease-in-out infinite;
   }
 
+  // `<picture>` is an inline box by default; the image inside measures its
+  // percentages against it, so it has to carry the size of the figure through.
+  &__portrait-picture {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
   &__portrait-image {
     display: block;
     inline-size: 100%;

@@ -5,16 +5,28 @@
 import type { CtaColor } from './cta';
 
 /**
- * The portrait above the synthesis card in the right column. The file itself
- * lives under `app/assets/img/` and is imported in the component, so that Vite
- * serves it with a hash.
+ * The portrait above the synthesis card in the right column. The files live
+ * under `app/assets/img/` and are imported in the component, so that Vite
+ * serves them with a hash. There are two of them: the box is never wider than
+ * 26rem, so one file for everything up to tablet and a second, denser one from
+ * the two-column layout on is enough - the master at 2364 px was five times
+ * the pixels the page ever showed.
  */
 export interface PresenterPortrait {
   /** Describes the person shown, not the picture. */
   alt: string;
-  /** Intrinsic size of the file, so nothing jumps before it has loaded. */
+  /**
+   * Intrinsic size of the file behind `<img src>`, so nothing jumps before it
+   * has loaded. Both variants are square, so the reserved box fits either.
+   */
   width: number;
   height: number;
+  /**
+   * Media query that switches to the wide file. It has to stay in step with
+   * `tokens.$bp-lg` by hand: a `<source media>` is an HTML attribute and
+   * cannot read the SCSS variable.
+   */
+  wideFrom: string;
 }
 
 /** A decorative glyph behind the portrait. */

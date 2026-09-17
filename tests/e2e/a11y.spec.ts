@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
-import { privacyPath } from '@/src/parts/navi/navi.data';
+import { privacyPath, startPath } from '@/src/parts/navi/navi.data';
 import { waitForHydration } from './hydration';
 
 /**
@@ -106,6 +106,33 @@ test.describe('Barrierefreiheit', () => {
     // No `include` here: on its own route the notice is the whole document,
     // so the bar above it and the footer below belong to the scan.
     expect(await violationsOf(page)).toEqual([]);
+  });
+
+  test('hat auf jeder Route genau eine main-Landmark', async ({ page }) => {
+    // Without one, everything on the page counts as unstructured content: a
+    // screen reader has nothing to jump to, and Lighthouse says so too. It
+    // wraps `<NuxtPage>` in `app.vue`, so each route brings exactly one.
+    for (const path of [startPath, privacyPath]) {
+      await page.goto(path);
+
+      await expect(page.locator('main')).toHaveCount(1);
+      await expect(page.getByRole('main')).toBeVisible();
+    }
+  });
+
+  test('legt den Inhalt in die main-Landmark, den Rahmen daneben', async ({
+    page,
+  }) => {
+    await page.goto(startPath);
+
+    // The sections are the content; bar and signature line are the frame and
+    // have landmarks of their own.
+    for (const section of sections) {
+      await expect(page.locator(`main ${section.selector}`)).toHaveCount(1);
+    }
+
+    await expect(page.locator('main .my-navi')).toHaveCount(0);
+    await expect(page.locator('main .my-footer')).toHaveCount(0);
   });
 
   test('hat genau eine h1, und die steht am Anfang der Seite', async ({

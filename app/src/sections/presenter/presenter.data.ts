@@ -35,8 +35,15 @@ export const presenterIntro: string[] = [
 
 export const presenterPortrait: PresenterPortrait = {
   alt: `${presenterName}, ${presenterRole}`,
-  width: 2364,
-  height: 2364,
+  // The narrow file is the one in `<img src>`; 640 px covers the box up to
+  // tablet, where it is at most 26rem = 416 px wide, with room for a dense
+  // display.
+  width: 640,
+  height: 640,
+  // 64rem is `tokens.$bp-lg` - from there on the hero stands in two columns
+  // and the portrait keeps its full 416 px, which the wide file serves at
+  // twice the density.
+  wideFrom: '(min-width: 64rem)',
 };
 
 /**

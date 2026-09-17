@@ -34,11 +34,38 @@ export const personProfiles: PersonProfiles = {
 export const personProfileUrls: string[] = Object.values(personProfiles);
 
 /**
- * The sharing image lives in `public/`, not in `assets/`: a preview URL has to
- * stay the same across builds, and the hash Vite puts on a processed asset
- * does not. It is the portrait, so it is square - which is why the page asks
- * for the square `summary` card and not the wide one.
+ * The mark in full size. Structured data points here: a consumer of it may
+ * render the image at any size, so it gets the one that does not run out of
+ * pixels.
+ *
+ * Both files live in `public/`, not in `assets/`: a URL that other services
+ * cache has to stay the same across builds, and the hash Vite puts on a
+ * processed asset does not.
  */
-export const personImage: string = absoluteUrl('/philipp-entzminger.png');
+export const personImage: string = absoluteUrl('/logo.png');
 
-export const personImageSize: PersonImageSize = { width: 2364, height: 2364 };
+export const personImageSize: PersonImageSize = { width: 1024, height: 1024 };
+
+/**
+ * The same mark, deliberately small, for the `og:image` of a shared link.
+ *
+ * The size is the whole point. Meta documents that WhatsApp draws the wide
+ * banner - image above, title and text below - once the image is 300px or
+ * wider, and falls back to the compact card - thumbnail on the left, title and
+ * text beside it - below that. 256px buys the compact card, and stays well
+ * clear of the 100px under which no preview shows at all.
+ *
+ * The trade is real and deliberate: this is also what LinkedIn and Xing get,
+ * and they render it small in turn. The mark is a flat shape, so it survives
+ * that better than a photograph would.
+ */
+export const personShareImage: string = absoluteUrl('/logo-256.png');
+
+export const personShareImageSize: PersonImageSize = { width: 256, height: 256 };
+
+/**
+ * Describes the sharing image, not the person - the portrait has its own alt
+ * text in the presenter. It still names the person, because that is what the
+ * mark stands for.
+ */
+export const personImageAlt: string = `Logo von ${personName}: ein „E“ auf oranger Scheibe`;

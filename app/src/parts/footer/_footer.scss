@@ -30,6 +30,16 @@
     font-weight: 600;
   }
 
+  // The build stamp sits apart from the signature line: `auto` pushes it to
+  // the far end of the row, and when the row wraps it keeps that end on its
+  // own line.
+  &__version {
+    margin: 0;
+    margin-inline-start: auto;
+    color: var(--my-color-ink-subtle);
+    font-size: 0.8125rem;
+  }
+
   /* Print output */
 
   @media print {

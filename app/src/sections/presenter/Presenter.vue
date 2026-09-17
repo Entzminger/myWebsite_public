@@ -60,13 +60,17 @@
         >{{ glyph.char }}</span>
 
         <figure class="my-presenter__portrait">
-          <img
-            class="my-presenter__portrait-image"
-            :src="portraitSrc"
-            :alt="presenterPortrait.alt"
-            :width="presenterPortrait.width"
-            :height="presenterPortrait.height"
-          />
+          <picture class="my-presenter__portrait-picture">
+            <source :media="presenterPortrait.wideFrom" :srcset="portraitWide" />
+
+            <img
+              class="my-presenter__portrait-image"
+              :src="portraitNarrow"
+              :alt="presenterPortrait.alt"
+              :width="presenterPortrait.width"
+              :height="presenterPortrait.height"
+            />
+          </picture>
         </figure>
       </div>
     </div>
@@ -75,10 +79,19 @@
 
 <script setup lang="ts">
 import Section from '@/src/parts/section/Section.vue';
-import portraitSrc from '@/assets/img/philipp.png';
+// Two sizes of the same portrait; which one a browser loads is decided in the
+// template. `philipp.png` beside them is the master they are rendered from and
+// is deliberately not imported here.
+import portraitNarrow from '@/assets/img/philipp-640.png';
+import portraitWide from '@/assets/img/philipp-832.png';
 import Chips from '@/src/parts/chips/Chips.vue';
 import Cta from '@/src/parts/cta/Cta.vue';
-import { personImage, personImageSize, siteUrl } from '@/src/parts/person/person.data';
+import {
+  personImageAlt,
+  personShareImage,
+  personShareImageSize,
+  siteUrl,
+} from '@/src/parts/person/person.data';
 import type { Chip } from '@/types/chips';
 import {
   actions,
@@ -113,14 +126,16 @@ useSeoMeta({
   ogLocale: 'de_DE',
   ogUrl: siteUrl,
   ogSiteName: presenterName,
-  ogImage: personImage,
-  ogImageWidth: personImageSize.width,
-  ogImageHeight: personImageSize.height,
-  ogImageAlt: presenterPortrait.alt,
+  // The small version of the mark on purpose - its size is what decides the
+  // shape of a WhatsApp preview. See `person.data`.
+  ogImage: personShareImage,
+  ogImageWidth: personShareImageSize.width,
+  ogImageHeight: personShareImageSize.height,
+  ogImageAlt: personImageAlt,
   // The one Twitter tag without an Open Graph counterpart: it names the shape
-  // of the card. The preview image is the portrait and therefore square, so
+  // of the card. The preview image is the wordmark and therefore square, so
   // the small square card is the honest choice - the wide one would crop the
-  // face. Title, description and image are deliberately not repeated for
+  // mark. Title, description and image are deliberately not repeated for
   // Twitter; that crawler falls back to the `og:` tags above.
   twitterCard: 'summary',
 });

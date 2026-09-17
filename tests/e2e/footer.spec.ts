@@ -1,10 +1,16 @@
 import { expect, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
 import {
   footerCopyright,
   footerDate,
   footerName,
   footerPlace,
 } from '@/src/parts/footer/footer.data';
+
+/** The one place the number is maintained - the spec reads it from there too. */
+const { version } = JSON.parse(
+  readFileSync(new URL('../../package.json', import.meta.url), 'utf8'),
+) as { version: string };
 
 test.describe('Seitenfuß', () => {
   test.beforeEach(async ({ page }) => {
@@ -23,6 +29,14 @@ test.describe('Seitenfuß', () => {
     await expect(footer.locator('.my-footer__name')).toHaveText(
       `${footerCopyright} ${footerName}`,
     );
+  });
+
+  test('zeigt die Version aus der package.json in der rechten Ecke', async ({
+    page,
+  }) => {
+    const stamp = page.locator('.my-footer__version');
+
+    await expect(stamp).toHaveText(version);
   });
 
   test('steht als letztes Element der Seite', async ({ page }) => {

@@ -1,5 +1,10 @@
 import { expect, test } from '@playwright/test';
-import { personImage, siteUrl } from '@/src/parts/person/person.data';
+import {
+  personImageAlt,
+  personShareImage,
+  personShareImageSize,
+  siteUrl,
+} from '@/src/parts/person/person.data';
 import {
   actions,
   focusAreas,
@@ -64,10 +69,22 @@ test.describe('Presenter-Sektion', () => {
     await expect(portrait).toHaveAttribute('alt', presenterPortrait.alt);
 
     // The file has to be served for real - a dead path would otherwise go
-    // unnoticed inside the round frame.
-    expect(
-      await portrait.evaluate((image: HTMLImageElement) => image.naturalWidth),
-    ).toBeGreaterThan(0);
+    // unnoticed inside the round frame. It also has to be one of the two cut
+    // variants: the 2364 px master would load five times the pixels the box is
+    // ever wide.
+    const naturalWidth = await portrait.evaluate(
+      (image: HTMLImageElement) => image.naturalWidth,
+    );
+
+    expect(naturalWidth).toBeGreaterThan(0);
+    expect(naturalWidth).toBeLessThanOrEqual(832);
+  });
+
+  test('bietet dem breiten Layout die dichtere Fassung an', async ({ page }) => {
+    const source = page.locator('#profile .my-presenter__portrait-picture source');
+
+    await expect(source).toHaveAttribute('media', presenterPortrait.wideFrom);
+    await expect(source).toHaveAttribute('srcset', /philipp-832/);
   });
 
   test('führt über den Hauptknopf zum Kontakt', async ({ page }) => {
@@ -115,11 +132,21 @@ test.describe('Presenter-Sektion', () => {
   test('liefert ein Vorschaubild für geteilte Links', async ({ page }) => {
     await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
       'content',
-      personImage,
+      personShareImage,
+    );
+
+    // Under 300px wide on purpose: that is the line Meta draws between the wide
+    // banner preview and the compact card with the thumbnail on the left. Over
+    // it, WhatsApp would stack the image above title and text again.
+    expect(personShareImageSize.width).toBeLessThan(300);
+    expect(personShareImageSize.width).toBeGreaterThanOrEqual(100);
+    await expect(page.locator('meta[property="og:image:width"]')).toHaveAttribute(
+      'content',
+      String(personShareImageSize.width),
     );
     await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute(
       'content',
-      presenterPortrait.alt,
+      personImageAlt,
     );
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
       'content',
@@ -132,7 +159,7 @@ test.describe('Presenter-Sektion', () => {
 
     // The file stands in `public/`, so the URL survives the next build - a
     // preview that 404s is worse than none at all.
-    const response = await page.request.get(personImage.replace(siteUrl, '/'));
+    const response = await page.request.get(personShareImage.replace(siteUrl, '/'));
     expect(response.status()).toBe(200);
   });
 
