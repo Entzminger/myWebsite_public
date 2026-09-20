@@ -438,5 +438,3 @@ export const privacyBackLabel: string = 'Zurück zur Startseite';
 /** The start page itself - its own route, so a path rather than an anchor. */
 export const privacyBackHref: string = '/';
 
-/** Arrow pointing back (24×24, stroke-based), for the button below the text. */
-export const arrowBackPath = 'M11 6l-6 6 6 6M5 12h14';

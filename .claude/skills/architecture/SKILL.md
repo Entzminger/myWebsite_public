@@ -14,19 +14,19 @@ Nuxt 4 mit dem neuen `app/`-Verzeichnis als `srcDir`. Zwei Routen: die
 Startseite trägt alle Sektionen, die Datenschutzerklärung steht für sich.
 
 ```
-app/app.vue                 – Rahmen um jede Route
-├── <Navi>                  – Navigation (enthält <Logo> als Wortmarke)
+app/app.vue                   – Rahmen um jede Route
+├── <Navi>                    – Navigation (enthält <Logo> als Wortmarke)
 ├── <NuxtPage>
-│   ├── pages/index.vue     – /
-│   │   ├── <Presenter>     – #profile, Hero mit Portrait und der einzigen h1
-│   │   ├── <Resume>        – #cv, Lebenslauf
-│   │   ├── <Foundation>    – #voluntary, Ehrenamt/Stiftung
-│   │   ├── <Github>        – #github, verlinktes Repository
-│   │   ├── <Contact>       – #contact, Kontaktformular
-│   │   ├── <Imprint>       – #imprint, Impressum, letzte Sektion der Seite
-│   │   └── <BackToTop>     – schwebender Sprung nach oben
-│   └── pages/privacy.vue   – /privacy, `noindex`, trägt <Privacy>
-└── <Footer>                – Seitenfuß, immer als letztes
+│   ├── src/pages/index.vue   – /
+│   │   ├── <Presenter>       – #profile, Hero mit Portrait und der einzigen h1
+│   │   ├── <Resume>          – #cv, Lebenslauf
+│   │   ├── <Foundation>      – #voluntary, Ehrenamt/Stiftung
+│   │   ├── <Github>          – #github, verlinktes Repository
+│   │   ├── <Contact>         – #contact, Kontaktformular
+│   │   ├── <Imprint>         – #imprint, Impressum, letzte Sektion der Seite
+│   │   └── <BackToTop>       – schwebender Sprung nach oben
+│   └── src/pages/privacy.vue – /privacy, `noindex`, trägt <Privacy>
+└── <Footer>                  – Seitenfuß, immer als letztes
 ```
 
 Navi und Footer stehen außerhalb von `<NuxtPage>`: Impressum und Datenschutz
@@ -50,10 +50,10 @@ app/
 │       ├── _tokens.scss   # Design-Tokens, nur Werte
 │       ├── _mixins.scss   # Theme-Paletten + Media-Query-Mixins
 │       └── base.scss      # einziger globaler Style-Layer, via nuxt.config
-├── pages/
-│   ├── index.vue        # die Startseite mit allen Sektionen
-│   └── privacy.vue      # /privacy, noindex, kein Canonical
 ├── src/
+│   ├── pages/           # die Routen, per `dir.pages` hierher gelegt
+│   │   ├── index.vue    # die Startseite mit allen Sektionen
+│   │   └── privacy.vue  # /privacy, noindex, kein Canonical
 │   ├── sections/        # was eine `.my-section` rendert
 │   │   ├── contact/
 │   │   ├── foundation/  # inkl. FoundationLogo.vue
@@ -69,6 +69,7 @@ app/
 │       ├── cta/         # geteilter Baustein
 │       ├── footer/
 │       ├── highlights/ # geteilter Baustein
+│       ├── icon/        # Icon.vue + alle Icon-Pfade
 │       ├── logo/
 │       ├── navi/
 │       ├── person/      # Identitätsdaten, ohne Komponente
@@ -93,12 +94,22 @@ app/src/<sections|parts>/<feature>/
 └── _<feature>.scss   # bei Bedarf
 ```
 
-**Die Entscheidung zwischen den beiden ist prüfbar**, nicht Geschmackssache:
+`pages/` steht neben beiden und fällt unter keine der zwei Regeln: eine Route
+ist kein Feature, sondern die Komposition dessen, was daneben liegt. Sie liegt
+trotzdem unter `src/` und nicht auf dem Standardpfad `app/pages/` – der Baum
+soll an einer Stelle zeigen, woraus die Seite besteht. `nuxt.config.ts` sagt
+das Nuxt mit `dir: { pages: 'src/pages' }`; der Pfad ist relativ zu `srcDir`,
+also zu `app/`. Der Ordner behält die Namenskonvention von Nuxt: sein
+Dateiname *ist* die Route, ein Feature-Unterordner mit `_<feature>.scss`
+wäre hier eine zusätzliche Route.
+
+**Die Entscheidung zwischen `sections/` und `parts/` ist prüfbar**, nicht
+Geschmackssache:
 Füllt die Komponente eine `<Section>` nach dem Komponentenaufbau aus dem Skill
 `developer` (Eyebrow, Titel, Lead), gehört sie nach `sections/`. Alles andere
 nach `parts/` – der Rahmen (`navi`, `logo`, `footer`), Steuerelemente
 (`backtotop`), die geteilten Bausteine (`section`, `card`, `chips`,
-`highlights`, `cta`) und reine Datenmodule (`person`).
+`highlights`, `icon`, `cta`) und reine Datenmodule (`person`).
 
 `section/` ist dabei kein Widerspruch: Es rendert die `.my-section`, aber es
 *ist* keine – es ist der leere Rahmen, den die sieben Sektionen füllen.
@@ -106,17 +117,28 @@ nach `parts/` – der Rahmen (`navi`, `logo`, `footer`), Steuerelemente
 `parts/` heißt bewusst nicht `shared/`: Navi, Logo, Footer und BackToTop kommen
 genau einmal vor, geteilt ist daran nichts.
 
+`person/` ist der eine geteilte Ordner **ohne Komponente** – er besteht nur
+aus seiner `.data.ts`. `icon/` war es bis zur Icon-Komponente ebenfalls und
+zeigt, wie so etwas wächst: zuerst wanderten die Pfade zusammen, weil dasselbe
+Icon an zwei Stellen wortgleich stand; erst danach der `<svg>`-Rahmen, der elf
+Mal mit denselben acht Attributen dastand. Beides sind Kopien einer
+Entscheidung, die niemand von Hand in Gleichschritt hält. Eine Zeichnung, die
+zum Icon-Bestand gehört, wird dort aufgenommen – auch die, die heute nur an
+einer Stelle steht, denn genau dort sucht die nächste Sektion danach. Wie
+beides benutzt wird, steht im Skill `developer`.
+
 Wird ein Feature komplex genug für mehrere Unterkomponenten, bekommen diese
 denselben Ordner (`app/src/sections/resume/ResumeEntry.vue` etc.) statt eines
 globalen Components-Verzeichnisses.
 
 ## Geteilte Bausteine
 
-Fünf Ordner unter `app/src/parts/` sind echte geteilte Bausteine: `section/`
+Sechs Ordner unter `app/src/parts/` sind echte geteilte Bausteine: `section/`
 (der Rahmen jeder Sektion), `chips/` (Chip-Listen), `highlights/` (die
-Häkchen-Liste, die Stiftung und GitHub gleichermaßen führen), `card/` (die
-Karte, auf der Stiftung, GitHub, Kontaktformular und die Blöcke des
-Lebenslaufs stehen) und `cta/` (der laute Knopf). Sie liegen
+Häkchen-Liste, die Stiftung und GitHub gleichermaßen führen), `icon/` (der
+`<svg>`-Rahmen um jedes Icon, dazu die Pfade selbst in `icon.data.ts`),
+`card/` (die Karte, auf der Stiftung, GitHub, Kontaktformular und die Blöcke
+des Lebenslaufs stehen) und `cta/` (der laute Knopf). Sie liegen
 bewusst im selben `src/`-Baum statt in einem `components/`-Verzeichnis – die
 Feature-Ordner-Regel gilt weiter.
 
@@ -160,7 +182,8 @@ steht im Skill `developer`.
 
 ## Routing
 
-Zwei Routen über `app/pages/`. Alle Inhaltssektionen liegen weiter auf der
+Zwei Routen über `app/src/pages/` (der Pfad steht in `nuxt.config.ts`, siehe
+„Verzeichnislayout"). Alle Inhaltssektionen liegen weiter auf der
 Startseite und werden per Anchor-Link (`Navi`) angesprungen; das Impressum ist
 bewusst eine Sektion davon, keine eigene Route – es ist kurz und trägt Name und
 Anschrift, die der Startseite guttun.

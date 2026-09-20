@@ -9,7 +9,7 @@ export const startPath = '/';
 /**
  * The route of the privacy notice. It is spelled out here because the
  * navigation owns its link targets - the route itself comes from the file name
- * `app/pages/privacy.vue`, the same way a section id and its entry below
+ * `app/src/pages/privacy.vue`, the same way a section id and its entry below
  * have always had to be kept in step by hand.
  */
 export const privacyPath = '/privacy';

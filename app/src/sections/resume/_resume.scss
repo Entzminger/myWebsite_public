@@ -194,6 +194,10 @@
   $contact-icon-gap: 0.75rem;
 
   &__contact-icon {
+    // Declared on the plate rather than on the icon, which carries no class of
+    // its own here - a custom property inherits down to it.
+    --my-icon-stroke-width: 1.75;
+
     display: flex;
     flex: 0 0 auto;
     align-items: center;

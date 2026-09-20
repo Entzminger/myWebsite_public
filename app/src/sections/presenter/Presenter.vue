@@ -30,19 +30,7 @@
             :color="action.color"
             :href="action.href"
           >
-            <svg
-              class="my-presenter__action-icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path :d="action.iconPath" />
-            </svg>
+            <Icon class="my-presenter__action-icon" :path="action.iconPath" />
             {{ action.label }}
           </Cta>
         </div>
@@ -86,6 +74,7 @@ import portraitNarrow from '@/assets/img/philipp-640.png';
 import portraitWide from '@/assets/img/philipp-832.png';
 import Chips from '@/src/parts/chips/Chips.vue';
 import Cta from '@/src/parts/cta/Cta.vue';
+import Icon from '@/src/parts/icon/Icon.vue';
 import {
   personImageAlt,
   personShareImage,

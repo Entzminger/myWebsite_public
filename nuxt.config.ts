@@ -12,6 +12,10 @@ const { version } = JSON.parse(
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  // The routes live beside the code they compose (`app/src/pages/`) rather
+  // than in a second top-level folder next to `src/`. The path is relative to
+  // `srcDir`, which is `app/`.
+  dir: { pages: 'src/pages' },
   css: ['@/assets/styles/base.scss'],
   // Baked in at build time - the static export has no server to read it at
   // runtime, which is exactly what is wanted: server and client render the

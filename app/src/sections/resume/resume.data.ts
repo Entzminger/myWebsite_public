@@ -1,18 +1,9 @@
+import { iconPaths } from '@/src/parts/icon/icon.data';
 import type {
   ResumeContact,
   ResumeSkillGroup,
   ResumeStation,
 } from '@/types/resume';
-
-/** Icon paths (24×24, stroke-based) for the personal details. */
-const icons = {
-  pin: 'M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
-  phone:
-    'M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25c1.15.38 2.4.58 3.6.58a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.58 3.6a1 1 0 0 1-.25 1l-2.23 2.2Z',
-  mail: 'M5 5h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm-1.6 1.7 8.6 5.8 8.6-5.8',
-  calendar:
-    'M7 3v3m10-3v3M3.5 9.5h17M5 6h14a1.5 1.5 0 0 1 1.5 1.5v11A1.5 1.5 0 0 1 19 20H5a1.5 1.5 0 0 1-1.5-1.5v-11A1.5 1.5 0 0 1 5 6Z',
-} as const;
 
 // Re-exported rather than restated: the JSON-LD below and the hero have to
 // name the same person, letter for letter.
@@ -35,14 +26,14 @@ export const contacts: ResumeContact[] = [
     id: 'address',
     label: 'Location',
     value: '76870 Kandel',
-    iconPath: icons.pin,
+    iconPath: iconPaths.pin,
   },
   {
     id: 'mail',
     label: 'E-Mail',
     value: personEmail,
     href: `mailto:${personEmail}`,
-    iconPath: icons.mail,
+    iconPath: iconPaths.mail,
   },
 ];
 

@@ -42,20 +42,7 @@
           <FoundationLogo class="my-foundation__cta-icon" />
           {{ foundationCtaLabel }}
           <span class="my-foundation__sr-only">(öffnet in einem neuen Tab)</span>
-          <svg
-            class="my-foundation__cta-arrow"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="M7 17 17 7" />
-            <path d="M8 7h9v9" />
-          </svg>
+          <Icon class="my-foundation__cta-arrow" :path="iconPaths.externalLink" />
         </Cta>
       </Card>
     </div>
@@ -70,6 +57,8 @@ import Chips from '@/src/parts/chips/Chips.vue';
 import { toChips } from '@/src/parts/chips/chips';
 import Cta from '@/src/parts/cta/Cta.vue';
 import FoundationLogo from './FoundationLogo.vue';
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
 import {
   facts,
   foundationCtaLabel,

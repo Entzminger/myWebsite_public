@@ -24,15 +24,12 @@
               target="_blank"
               rel="me noopener noreferrer"
             >
-              <svg
+              <Icon
                 class="my-contact__profile-icon"
-                :viewBox="profile.viewBox"
-                fill="currentColor"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path :d="profile.iconPath" />
-              </svg>
+                variant="fill"
+                :view-box="profile.viewBox"
+                :path="profile.iconPath"
+              />
               {{ profile.label }}
               <span class="my-contact__sr-only">(öffnet in einem neuen Tab)</span>
             </a>
@@ -89,19 +86,7 @@
           class="my-contact__submit"
           color="accent"
         >
-          <svg
-            class="my-contact__submit-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path :d="contactSendIconPath" />
-          </svg>
+          <Icon class="my-contact__submit-icon" :path="iconPaths.paperPlane" />
           {{ contactSubmitLabel }}
         </Cta>
 
@@ -132,6 +117,8 @@ import { computed, reactive, ref } from 'vue';
 import Section from '@/src/parts/section/Section.vue';
 import Card from '@/src/parts/card/Card.vue';
 import Cta from '@/src/parts/cta/Cta.vue';
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
 import type { ContactFieldId } from '@/types/contact';
 import {
   contactEyebrow,
@@ -144,7 +131,6 @@ import {
   contactMailSubject,
   contactMailTo,
   contactProfilesTitle,
-  contactSendIconPath,
   contactStatus,
   contactSubmitLabel,
   contactTitle,

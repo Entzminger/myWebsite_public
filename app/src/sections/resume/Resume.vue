@@ -18,21 +18,7 @@
           :title="exportLabel"
           @click="exportAsPdf"
         >
-          <svg
-            class="my-resume__export-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="M6 9V2h12v7" />
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-            <path d="M6 14h12v8H6z" />
-          </svg>
+          <Icon class="my-resume__export-icon" :path="iconPaths.printer" />
         </button>
       </header>
 
@@ -54,18 +40,7 @@
               >
                 <dt class="my-resume__contact-label">
                   <span class="my-resume__contact-icon">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.75"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                      focusable="false"
-                    >
-                      <path :d="contact.iconPath" />
-                    </svg>
+                    <Icon :path="contact.iconPath" />
                   </span>
                   {{ contact.label }}
                 </dt>
@@ -197,6 +172,8 @@ import Section from '@/src/parts/section/Section.vue';
 import Card from '@/src/parts/card/Card.vue';
 import Chips from '@/src/parts/chips/Chips.vue';
 import { toChips } from '@/src/parts/chips/chips';
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
 import {
   personImage,
   personProfileUrls,

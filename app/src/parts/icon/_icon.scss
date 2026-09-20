@@ -1,0 +1,17 @@
+/**
+ * The icon wrapper. It brings almost nothing of its own: an icon is as large
+ * as the place it stands in and takes its colour from it, so size and `color`
+ * stay with the use site's own class.
+ *
+ * What comes from outside:
+ *   --my-icon-stroke-width   the line weight of a stroke icon, `2` by default.
+ *                            Set it on the icon itself or on any element above
+ *                            it - a custom property inherits, which is how the
+ *                            resume reaches an icon it gives no class of its
+ *                            own.
+ */
+.my-icon {
+  // On a `fill` icon this has nothing to act on, which is why it needs no
+  // modifier to tell the two apart.
+  stroke-width: var(--my-icon-stroke-width, 2);
+}

@@ -12,5 +12,3 @@ export const backToTopTarget = 'profile';
  */
 export const backToTopLabel = 'Nach oben zu „Über mich“ springen';
 
-/** Arrow pointing up (24×24, stroke-based). */
-export const arrowUpPath = 'M12 20V5m0 0-6 6m6-6 6 6';

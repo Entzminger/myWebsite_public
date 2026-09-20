@@ -13,11 +13,11 @@ der `<main>`-Landmark und der Footer als letztes Element. Das `<main>` steht
 dort und nicht in einer Seite: jede Route braucht genau eine, und es gibt nur
 ein `<NuxtPage>` zum Umschließen. Es trägt keine Klasse und keine Styles – es
 ist nichts als die Landmark. Die Sektionen stehen in dieser Reihenfolge in
-`app/pages/index.vue`: Presenter, Lebenslauf (Resume), Ehrenamt (Foundation),
+`app/src/pages/index.vue`: Presenter, Lebenslauf (Resume), Ehrenamt (Foundation),
 GitHub, Kontakt und Impressum, dazu BackToTop als letztes.
 
 Der Datenschutz ist keine dieser Sektionen, sondern eine eigene Route:
-`app/pages/privacy.vue` unter `/privacy`. Sie trägt `noindex, follow` und **kein**
+`app/src/pages/privacy.vue` unter `/privacy`. Sie trägt `noindex, follow` und **kein**
 Canonical –
 erreichbar muss sie sein, gefunden werden nicht. Der Grund für die Trennung ist
 messbar: als zweite Ansicht desselben Dokuments stellte der Rechtstext 68 % des
@@ -50,12 +50,17 @@ Live-Domain: entzminger.dev
 Details und Begründungen siehe Skill **`architecture`**.
 
 - `app/app.vue` – Rahmen um jede Route (Navi, `<main>` um `<NuxtPage>`, Footer), keine Logik
-- `app/pages/` – `index.vue` (die Startseite mit allen Sektionen) und
-  `privacy.vue` (die Erklärung unter `/privacy`, `noindex`)
-- `app/src/` zerfällt in genau zwei Ordner. Die Regel dafür ist prüfbar: Was
-  **Inhalt** in eine `.my-section` stellt, ist eine Sektion, alles andere
-  nicht. Die `.my-section` selbst rendert `parts/section` – sie ist der leere
-  Rahmen, kein Inhalt.
+- `app/src/` trägt alles, was diese Seite ausmacht, in drei Ordnern:
+  `pages/` sind die Routen, darunter teilen sich `sections/` und `parts/` den
+  Rest. Die Regel dafür ist prüfbar: Was **Inhalt** in eine `.my-section`
+  stellt, ist eine Sektion, alles andere nicht. Die `.my-section` selbst
+  rendert `parts/section` – sie ist der leere Rahmen, kein Inhalt.
+- `app/src/pages/` – `index.vue` (die Startseite mit allen Sektionen) und
+  `privacy.vue` (die Erklärung unter `/privacy`, `noindex`). Der Ordner liegt
+  nicht auf dem Standardpfad `app/pages/`, sondern wird in `nuxt.config.ts`
+  über `dir: { pages: 'src/pages' }` hierher gelegt – eine Route ist nichts
+  als die Komposition dessen, was daneben liegt, und braucht dafür keinen
+  eigenen Ast neben `src/`.
 - `app/src/sections/<feature>/` – die Inhaltsblöcke: `presenter`, `resume`,
   `foundation`, `github`, `contact`, `imprint` und `privacy`. Letzteres steht
   allein auf seiner Route, ist aber nach demselben Bauplan gebaut.
@@ -65,12 +70,35 @@ Details und Begründungen siehe Skill **`architecture`**.
   - die geteilten Bausteine `section` (das `<section>`-Element samt der
     gemeinsamen `.my-section`, Inhalt als Default-Slot),
     `chips` (Chip-Listen), `highlights` (die Häkchen-Liste von Stiftung und
-    GitHub), `card` (die Karte hinter
+    GitHub), `icon` (der `<svg>`-Rahmen um jedes Icon), `card` (die Karte hinter
     Stiftung, GitHub, Kontaktformular und den Lebenslauf-Blöcken) und `cta`
     (der laute Knopf); `Card` und `Cta` nehmen ihren Inhalt als Default-Slot
   - `person` – Identitätsdaten ohne Komponente (Name, Domain, Profil-URLs,
     Vorschaubild). Presenter, Lebenslauf und Kontakt müssen dieselben URLs
     nennen, sonst zerfällt die Person für Suchmaschinen in mehrere.
+  - `icon` – der Ordner trägt beides: `Icon.vue`, den `<svg>`-Rahmen, und
+    `icon.data.ts`, **jeden Icon-Pfad** der Seite. Kein Pfad steht mehr in einer
+    Sektion oder inline in einem Template: der Briefumschlag stand Zeichen für
+    Zeichen in `presenter.data.ts` *und* in `resume.data.ts`, der Pfeil aus dem
+    Kasten inline in `Foundation.vue` *und* in `Github.vue`. Zwei Kopien eines
+    Pfades bleiben von Hand nicht gleich. Benannt wird nach dem, was die
+    Zeichnung **zeigt** (`arrowLeft`, nicht `arrowBack`).
+    Ebenso stand der Rahmen an dreizehn Stellen mit denselben acht Attributen
+    da – dreizehn Kopien einer Entscheidung, die überall dieselbe ist,
+    `aria-hidden` voran.
+    Er kennt zwei Haltungen: `stroke` (Strich, Vorgabe) und `fill` (Fläche).
+  - **Zwei Ausnahmen, und sie betreffen Verschiedenes.** Nicht im Bestand
+    liegen die Pfade der beiden Fremdmarken – aus demselben Grund, aus dem auch
+    die Markenfarben bei ihrer Sektion bleiben: die GitHub-Marke liegt auf einer
+    98×96-Box, die sie mit dem Commit-Graphen derselben Sektion teilt, die
+    Stiftungsmarke auf 84×52 und in zwei Pfade geteilt, damit eine Stelle Rahmen
+    und Treppe verschieden füllen kann. Den *Rahmen* dagegen behalten nur drei
+    Stellen selbst, weil `Icon` genau einen Pfad zeichnet: `FoundationLogo`
+    (Rechteck plus zwei Pfade mit eigenem `fill`), `Logo` (das „E“ der eigenen
+    Wortmarke – ein Buchstabenumriss aus einer Schriftdatei ist kein Icon) und
+    der Commit-Graph hinter der GitHub-Sektion (fünf getrennte Striche). Die
+    GitHub-Marke selbst geht durch `Icon`, mit `variant="fill"` und eigener
+    `view-box`.
 - Jeder Feature-Ordner enthält dasselbe: Komponente, `_<feature>.scss` und
   `<feature>.data.ts` (Inhalte als typisierte Konstanten, keine Texte fest im
   Template). `parts/` heißt bewusst nicht `shared/`: Navi, Logo, Footer und
@@ -117,8 +145,9 @@ Details und Begründungen siehe Skill **`architecture`**.
   muss sie weiß füllen, weil JPEG keine Transparenz kennt.
 - `tests/e2e/` – Playwright-Specs, ein File pro Sektion bzw. Baustein
 - `nuxt.config.ts` – Nuxt-Konfiguration
-- `.github/workflows/` – CI (Typecheck, Build, E2E bei jedem Push) und Deploy
-  (nur auf Auslösung, siehe „Deployment")
+- `.github/workflows/` – vier Workflows: CI (Typecheck, Build, E2E bei jedem
+  Push), Deploy (nur auf Auslösung) sowie Preview und dessen Aufräumen
+  (die Vorschau je Pull Request, siehe „Deployment")
 
 ## Befehle
 
@@ -139,11 +168,45 @@ auf einem SFTP-Webspace – zur Laufzeit braucht sie keinen Node-Server.
 - `.github/workflows/deploy.yml` veröffentlicht – **nur per `workflow_dispatch`**,
   nie automatisch bei einem Push. Er wiederholt alle Prüfungen, erzeugt den
   Export und spiegelt ihn per `lftp` über SFTP auf den Server.
+- `.github/workflows/preview.yml` stellt **jeden Pull Request** auf
+  `preview.entzminger.dev` und schreibt den Link als Kommentar an den Pull
+  Request. Der Grund ist der Arbeitsplatz, nicht der Komfort: vom Handy aus
+  gibt es kein `yarn dev`, und ohne einen Blick auf das Ergebnis ist eine
+  Änderung von unterwegs nicht zu verantworten.
+- Es gibt genau **einen** Vorschau-Platz (`PREVIEW_PATH`). Ein zweiter Pull
+  Request überschreibt den ersten – deshalb trägt jede Seite unten links eine
+  Kennzeichnung mit PR-Nummer und Commit.
+- Dieser Platz ist ein **eigenes Root-Verzeichnis neben der Seite**, kein
+  Unterordner von `DEPLOY_PATH`. Das ist der Grund, warum `deploy.yml` die
+  Vorschau nicht ausnehmen muss: sein `mirror --delete` kommt dort nicht hin,
+  und `entzminger.dev/preview/` gibt es nicht. Wird das je zu einem
+  Unterordner, braucht der Live-Mirror ein `--exclude-glob` dafür – sonst
+  löscht jeder Deploy die Vorschau samt Document-Root der Subdomain.
+- Die Vorschau ist dieselbe Seite unter einem zweiten Host, also eine Kopie
+  jeder URL. Der Workflow setzt deshalb in **jede** exportierte HTML-Datei ein
+  `noindex` und legt eine `.htaccess` mit demselben Satz als `X-Robots-Tag`
+  dazu. Die `robots.txt` der Subdomain lässt das Krabbeln **absichtlich** zu:
+  wer die Seite nicht holen darf, liest das `noindex` nie – dieselbe
+  Begründung wie in `public/robots.txt` für `/privacy`.
+- `.github/workflows/preview-cleanup.yml` leert den Platz wieder, nur per
+  `workflow_dispatch`. Es löscht das Verzeichnis nicht, sondern spiegelt eine
+  kurze Notiz hinein: das Document-Root der Subdomain muss bestehen bleiben.
 - Zugangsdaten liegen ausschließlich in den GitHub-Secrets `SSH_HOST`,
-  `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS` und `DEPLOY_PATH` – niemals
-  im Repository, auch nicht in `.env`.
-- Auslösen von der Kommandozeile: `gh workflow run deploy.yml --ref main`,
-  verfolgen mit `gh run watch`.
+  `SSH_USER`, `SSH_PRIVATE_KEY`, `SSH_KNOWN_HOSTS`, `DEPLOY_PATH` und
+  `PREVIEW_PATH` – niemals im Repository, auch nicht in `.env`.
+- **Kein Workflow darf `PREVIEW_PATH` blind benutzen.** Preview und Aufräumen
+  spiegeln beide mit `--delete`; ein leerer, zu weit gefasster oder mit
+  `DEPLOY_PATH` identischer Wert löscht die Live-Seite. Beide prüfen das,
+  bevor überhaupt eine Verbindung aufgemacht wird – eine neue Stelle, die dort
+  hinschreibt, braucht dieselbe Prüfung.
+- Auslösen von der Kommandozeile: `gh workflow run deploy.yml --ref main`
+  bzw. `gh workflow run preview-cleanup.yml --ref main`, verfolgen mit
+  `gh run watch`. Achtung: `gh run watch --exit-status` meldet auch bei einem
+  fehlgeschlagenen Lauf `0` – die Wahrheit steht in `gh run view`.
+- Beide lassen sich auch aus der GitHub-App auf dem Handy starten. Das ist
+  der Grund, warum es **keinen** Push-Trigger auf `main` gibt und nicht
+  braucht: `main` ist der Stand, das Veröffentlichen eine zweite, bewusste
+  Handlung – und die kostet unterwegs trotzdem nur ein paar Tipper.
 
 ## Leitplanken
 

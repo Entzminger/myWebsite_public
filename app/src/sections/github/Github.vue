@@ -28,15 +28,12 @@
 
       <Card aria-labelledby="my-github-repo">
         <header class="my-github__card-header">
-          <svg
+          <Icon
             class="my-github__card-icon"
-            viewBox="0 0 98 96"
-            fill="currentColor"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path :d="githubLogoPath" />
-          </svg>
+            variant="fill"
+            view-box="0 0 98 96"
+            :path="githubLogoPath"
+          />
           <h3 id="my-github-repo" class="my-github__repo">
             <span class="my-github__repo-owner">{{ repositoryOwner }}/</span>
             <span class="my-github__repo-name">{{ repositoryName }}</span>
@@ -58,31 +55,15 @@
           target="_blank"
           rel="noopener noreferrer"
         >
-          <svg
+          <Icon
             class="my-github__cta-icon"
-            viewBox="0 0 98 96"
-            fill="currentColor"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path :d="githubLogoPath" />
-          </svg>
+            variant="fill"
+            view-box="0 0 98 96"
+            :path="githubLogoPath"
+          />
           {{ githubCtaLabel }}
           <span class="my-github__sr-only">(öffnet in einem neuen Tab)</span>
-          <svg
-            class="my-github__cta-arrow"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-            focusable="false"
-          >
-            <path d="M7 17 17 7" />
-            <path d="M8 7h9v9" />
-          </svg>
+          <Icon class="my-github__cta-arrow" :path="iconPaths.externalLink" />
         </Cta>
       </Card>
     </div>
@@ -96,6 +77,8 @@ import Highlights from '@/src/parts/highlights/Highlights.vue';
 import Chips from '@/src/parts/chips/Chips.vue';
 import { toChips } from '@/src/parts/chips/chips';
 import Cta from '@/src/parts/cta/Cta.vue';
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
 import {
   githubCtaLabel,
   githubEyebrow,

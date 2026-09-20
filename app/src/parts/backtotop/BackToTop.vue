@@ -6,25 +6,15 @@
     :aria-label="backToTopLabel"
     :title="backToTopLabel"
   >
-    <svg
-      class="my-backtotop__icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path :d="arrowUpPath" />
-    </svg>
+    <Icon class="my-backtotop__icon" :path="iconPaths.arrowUp" />
   </a>
 </template>
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { arrowUpPath, backToTopLabel, backToTopTarget } from './backtotop.data';
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
+import { backToTopLabel, backToTopTarget } from './backtotop.data';
 
 // Hidden on the server and on the first client render, so hydration matches;
 // the observer decides right after mount.

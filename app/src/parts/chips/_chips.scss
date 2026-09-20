@@ -77,6 +77,10 @@
   /* Icon */
 
   &__icon {
+    // A hair finer than the default: at 1rem the icon sits next to type, not
+    // on a button.
+    --my-icon-stroke-width: 1.75;
+
     // The icon carries the brand, even where the chip itself stays neutral.
     flex: none;
     inline-size: 1rem;

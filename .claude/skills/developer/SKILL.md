@@ -99,8 +99,9 @@ Jede Sektion folgt demselben Aufbau, damit die Seite als ein Stück wirkt:
 - **Dekoration** – Glow, Raster oder Hintergrundlogos laufen über `::before`/
   `::after` oder ein `aria-hidden="true"`-Element, liegen hinter dem Inhalt
   und werden von der Sektion mit `overflow: hidden` beschnitten.
-- **Icons** – als Inline-SVG mit `aria-hidden="true"` und `focusable="false"`,
-  Pfade als Konstanten in der `.data.ts`, nicht doppelt im Template.
+- **Icons** – immer `<Icon>` aus `@/src/parts/icon/Icon.vue`, nie ein eigenes
+  `<svg>`; der Pfad kommt aus `icon.data.ts` und wird nie in der Sektion oder
+  im Template notiert – siehe „Icons benutzen".
 - **Animationen** – jede Bewegung bekommt ihren Gegenpart in
   `@include mixins.motion-reduce { … }`.
 
@@ -108,7 +109,7 @@ Jede Sektion folgt demselben Aufbau, damit die Seite als ein Stück wirkt:
 
 - Der Seitenfuß (`app/src/parts/footer/Footer.vue`, `<Footer>`) steht in
   `app/app.vue` **immer als letztes Element** – nach `<NuxtPage>`. Neue
-  Sektionen werden in `app/pages/index.vue` eingehängt, nie hinter dem Footer.
+  Sektionen werden in `app/src/pages/index.vue` eingehängt, nie hinter dem Footer.
 - Der Footer gehört keiner Sektion. Seine Inhalte (Ort, Datum, Name) liegen in
   `app/src/parts/footer/footer.data.ts`, seine Klassen tragen den eigenen Block
   `my-footer__…` – nichts davon hängt am Lebenslauf oder einer anderen Sektion.
@@ -304,6 +305,9 @@ Abstand und Markenfarbe kommen von außen, nicht aus dem Modell:
 }
 ```
 
+`app/src/parts/icon/Icon.vue` zeichnet jedes Icon. Es hat einen eigenen
+Abschnitt weiter unten, weil an ihm mehr hängt als ein Aufruf.
+
 `app/src/parts/highlights/Highlights.vue` zeichnet die Häkchen-Liste, mit der
 eine Sektion aufzählt, was die verlinkte Seite ausmacht:
 
@@ -314,7 +318,8 @@ eine Sektion aufzählt, was die verlinkte Seite ausmacht:
 - Das Modell ist `Highlight[]` aus `app/types/highlights.ts`: `id`, `label`
   und `detail`. Beide Sektionen typisieren ihre Liste darauf, statt sich ein
   eigenes `…Highlight`-Interface zu halten.
-- Das Häkchen bringt der Baustein mit; sein Pfad steht in `highlights.data.ts`.
+- Das Häkchen bringt der Baustein mit; sein Pfad ist `iconPaths.check`.
+  Der Ordner hat deshalb keine eigene `.data.ts` mehr.
 - Von außen kommt `--my-highlights-icon`, die Markenfarbe der Häkchen.
 
 `app/src/parts/card/Card.vue` ist die Karte, auf der Stiftung, GitHub, das
@@ -339,6 +344,64 @@ dafür bauen:
   die Liste steht im Kopfkommentar der jeweiligen Partial-Datei.
 - `color="brand"` bringt keine Farbe mit: Sektionen, die auf eine fremde
   Marke verlinken, setzen deren Töne selbst – genau wie bei den Chips.
+
+## Icons benutzen
+
+**Kein Template schreibt ein `<svg>`.** `app/src/parts/icon/` trägt beides: den
+Rahmen als `Icon.vue` und in `icon.data.ts` jeden Icon-Pfad der Seite.
+
+```vue
+<Icon class="my-resume__export-icon" :path="iconPaths.printer" />
+<Icon v-if="chip.iconPath" class="my-chips__icon" :path="chip.iconPath" />
+<Icon class="my-github__card-icon" variant="fill" view-box="0 0 98 96" :path="githubLogoPath" />
+```
+
+```ts
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
+```
+
+- `variant` ist `stroke` (Vorgabe, die Strich-Icons aus `iconPaths`) oder
+  `fill` (Flächen: `brandIconPaths`, die GitHub-Marke). Die beiden sind nicht
+  austauschbar – als Fläche gezeichnet wird ein Umriss ein Klecks, als Strich
+  gezeichnet verschwindet eine Fläche. Deshalb stehen auch die Pfade in zwei
+  Exporten und nicht in einem.
+- `view-box` nur für eine Marke, die nicht auf der 24×24-Box liegt. Vue
+  liefert ein gebundenes Attribut klein geschrieben aus (`viewbox`); der
+  HTML-Parser bildet das auf `viewBox` zurück, `icon.spec.ts` prüft es an
+  `viewBox.baseVal`.
+- **Größe und Farbe sind keine Props.** Sie kommen aus der Klasse, die die
+  Aufrufstelle mitgibt und die auf das `<svg>` durchfällt – ein Icon ist so
+  groß wie der Platz, an dem es steht, und nimmt `currentColor`.
+- **Die Strichstärke ist eine Custom Property**: `--my-icon-stroke-width`,
+  Vorgabe `2`. Sie wird auf dem Icon selbst gesetzt (`.my-chips__icon`) oder
+  auf irgendeinem Element darüber – eine Custom Property erbt, und so erreicht
+  `_resume.scss` sein Kontakt-Icon, dem es gar keine eigene Klasse gibt.
+- `aria-hidden="true"` und `focusable="false"` bringt der Baustein mit. Das war
+  der Grund für ihn: dreizehn Aufrufstellen sind dreizehn Kopien derselben
+  Entscheidung, und eine vergessene fällt keinem auf.
+- **Ein String pro Icon, auch bei mehreren Strichen.** Jeder Teilpfad beginnt
+  mit einem absoluten `M`, also ergeben sie aneinandergehängt genau dasselbe
+  `d`. So bleibt `path` ein schlichter String und das Modell jeder Sektion ein
+  `iconPath: string`.
+- **Benannt wird nach dem, was die Zeichnung zeigt**, nicht nach ihrem
+  heutigen Zweck: `arrowLeft` statt `arrowBack`, `check` statt `highlight`.
+  Wer als nächstes einen Pfeil nach links braucht, sucht nicht nach der Rolle,
+  die dieser gerade spielt.
+- Ein Icon, das über ein Datenmodell läuft (`Chip`, `PresenterFocus`,
+  `ResumeContact`, `ContactProfile`), bekommt seinen Pfad in der `.data.ts`
+  der Sektion zugewiesen (`iconPath: iconPaths.mail`) – die Sektion wählt das
+  Icon, sie zeichnet es nicht.
+- **Fremdmarken-Pfade bleiben bei ihrer Sektion**, genau wie deren Farben: die
+  GitHub-Marke (98×96, teilt die Box mit dem Commit-Graphen) in
+  `github.data.ts`, die Stiftungsmarke (84×52, in Rahmen und Treppe geteilt,
+  damit eine Stelle beide verschieden füllen kann) in `foundation.data.ts`.
+  Dasselbe gilt für das „E“ der eigenen Wortmarke in `logo/`: ein
+  Buchstabenumriss aus einer Schriftdatei ist kein Icon.
+- **Ein eigenes `<svg>` schreibt nur, wer mehr als einen Pfad braucht** – das
+  sind genau drei Stellen: `FoundationLogo` (Rechteck plus zwei Pfade mit
+  eigenem `fill`), `Logo` (die Wortmarke) und der Commit-Graph hinter der
+  GitHub-Sektion (fünf getrennte Striche). Eine vierte gehört nach `Icon`.
 
 ## Geteilte Komponenten von außen gestalten
 
@@ -428,7 +491,7 @@ Das ist bei SSR die häufigste Fehlerquelle – folgende Regeln strikt einhalten
 
 ## Testing (Playwright)
 
-Playwright ist eingerichtet, die Suite umfasst aktuell 143 Tests
+Playwright ist eingerichtet, die Suite umfasst aktuell 247 Tests
 (`yarn test:e2e`, UI-Modus `yarn test:e2e:ui`).
 
 - E2E-Tests liegen unter `tests/e2e/*.spec.ts`, ein File pro Sektion.

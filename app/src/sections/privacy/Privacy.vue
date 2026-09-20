@@ -1,5 +1,5 @@
 <template>
-  <!-- A route of its own (`pages/privacy.vue`), so this is the whole
+  <!-- A route of its own (`src/pages/privacy.vue`), so this is the whole
        document rather than one section of it: the title is the `h1` here,
        and the headings below follow one level up from the rest of the site. -->
   <Section
@@ -80,19 +80,7 @@
          for as long as there is text to read. -->
     <div class="my-privacy__back-bar">
       <Cta class="my-privacy__back" color="primary" :href="privacyBackHref">
-        <svg
-          class="my-privacy__back-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path :d="arrowBackPath" />
-        </svg>
+        <Icon class="my-privacy__back-icon" :path="iconPaths.arrowLeft" />
         {{ privacyBackLabel }}
       </Cta>
     </div>
@@ -103,8 +91,9 @@
 import Section from '@/src/parts/section/Section.vue';
 import Card from '@/src/parts/card/Card.vue';
 import Cta from '@/src/parts/cta/Cta.vue';
+import Icon from '@/src/parts/icon/Icon.vue';
+import { iconPaths } from '@/src/parts/icon/icon.data';
 import {
-  arrowBackPath,
   privacyBackHref,
   privacyBackLabel,
   privacyChapters,
